@@ -9,6 +9,10 @@
 		{
 			"name": "Drahomír Hanák",
 			"homepage": "http://www.drahak.eu"
+		},
+		{
+			"name": "Petr Kalanis Plšek",
+			"homepage": "http://www.kalanys.com"
 		}
 	],
 	"require": {
@@ -25,7 +29,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Drahak\\OAuth2\\": "src/Drahak/OAuth2"
+			"Drahak\\OAuth2\\": "src/Drahak/OAuth2/"
 		}
 	}
 }
