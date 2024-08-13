@@ -5,8 +5,9 @@ namespace Drahak\OAuth2\Storage\AuthorizationCodes;
 use DateTime;
 use Drahak\OAuth2\IKeyGenerator;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Drahak\OAuth2\Storage\InvalidAuthorizationCodeException;
+use Drahak\OAuth2\Storage\Exceptions\InvalidAuthorizationCodeException;
 use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\ITokens;
 use Nette\SmartObject;
 
 /**
@@ -18,30 +19,18 @@ class AuthorizationCodeFacade implements ITokenFacade
 {
     use SmartObject;
 
-    /** @var int */
-    private $lifetime;
-
-    /** @var IAuthorizationCodeStorage */
-    private $storage;
-
-    /** @var IKeyGenerator */
-    private $keyGenerator;
-
-    public function __construct($lifetime, IKeyGenerator $keyGenerator, IAuthorizationCodeStorage $storage)
+    public function __construct(
+        private readonly int $lifetime,
+        private readonly IKeyGenerator $keyGenerator,
+        private readonly IAuthorizationCodeStorage $storage
+    )
     {
-        $this->lifetime = $lifetime;
-        $this->keyGenerator = $keyGenerator;
-        $this->storage = $storage;
     }
 
     /**
      * Create authorization code
-     * @param IClient $client
-     * @param string|int $userId
-     * @param array $scope
-     * @return AuthorizationCode
      */
-    public function create(IClient $client, $userId, array $scope = array())
+    public function create(IClient $client, string|int $userId, array $scope = []): ITokens
     {
         $accessExpires = new DateTime;
         $accessExpires->modify('+' . $this->lifetime . ' seconds');
@@ -60,12 +49,8 @@ class AuthorizationCodeFacade implements ITokenFacade
 
     /**
      * Get authorization code entity
-     * @param string $token
-     * @return IAuthorizationCode|NULL
-     *
-     * @throws InvalidAuthorizationCodeException
      */
-    public function getEntity($token)
+    public function getEntity(string $token): ?ITokens
     {
         $entity = $this->storage->getValidAuthorizationCode($token);
         if (!$entity) {
@@ -77,9 +62,8 @@ class AuthorizationCodeFacade implements ITokenFacade
 
     /**
      * Get token identifier name
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::AUTHORIZATION_CODE;
     }
@@ -91,18 +75,16 @@ class AuthorizationCodeFacade implements ITokenFacade
      * Get token lifetime
      * @return int
      */
-    public function getLifetime()
+    public function getLifetime(): int
     {
         return $this->lifetime;
     }
 
     /**
      * Get storage
-     * @return IAuthorizationCodeStorage
      */
-    public function getStorage()
+    public function getStorage(): IAuthorizationCodeStorage
     {
         return $this->storage;
     }
-
 }

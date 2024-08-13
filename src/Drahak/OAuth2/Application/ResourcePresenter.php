@@ -3,8 +3,8 @@
 namespace Drahak\OAuth2\Application;
 
 use Drahak\OAuth2\Http\IInput;
-use Drahak\OAuth2\Storage\AccessToken;
-use Drahak\OAuth2\Storage\InvalidAccessTokenException;
+use Drahak\OAuth2\Storage\AccessTokens\AccessToken;
+use Drahak\OAuth2\Storage\Exceptions\InvalidAccessTokenException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
 
@@ -16,16 +16,13 @@ use Nette\Application\UI\Presenter;
 abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 {
 
-    /** @var AccessToken */
-    protected $accessToken;
-    /** @var IInput */
-    private $input;
+    protected AccessToken $accessToken;
+    private IInput $input;
 
     /**
      * Standard input parser
-     * @param IInput $input
      */
-    public function injectInput(IInput $input)
+    public function injectInput(IInput $input): void
     {
         $this->input = $input;
     }
@@ -34,17 +31,17 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
      * Access token manager
      * @param AccessToken $accessToken
      */
-    public function injectAccessToken(AccessToken $accessToken)
+    public function injectAccessToken(AccessToken $accessToken): void
     {
         $this->accessToken = $accessToken;
     }
 
     /**
      * Check presenter requirements
-     * @param $element
+     * @param \ReflectionClass|\ReflectionMethod $element
      * @throws ForbiddenRequestException
      */
-    public function checkRequirements($element)
+    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
     {
         parent::checkRequirements($element);
         $accessToken = $this->input->getAuthorization();
@@ -60,7 +57,7 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
      * @return void
      * @throws ForbiddenRequestException
      */
-    public function checkAccessToken($accessToken)
+    public function checkAccessToken(string $accessToken): void
     {
         try {
             $this->accessToken->getEntity($accessToken);
@@ -68,6 +65,4 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
             throw new ForbiddenRequestException('Invalid access token provided. Use refresh token to grant new one.', 0, $e);
         }
     }
-
-
 }

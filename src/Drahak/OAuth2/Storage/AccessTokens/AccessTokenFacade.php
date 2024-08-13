@@ -5,46 +5,32 @@ namespace Drahak\OAuth2\Storage\AccessTokens;
 use DateTime;
 use Drahak\OAuth2\IKeyGenerator;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Drahak\OAuth2\Storage\InvalidAccessTokenException;
+use Drahak\OAuth2\Storage\Exceptions\InvalidAccessTokenException;
 use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\ITokens;
 use Nette\SmartObject;
 
 /**
  * AccessToken
  * @package Drahak\OAuth2\Token
  * @author Drahomír Hanák
- *
- * @property-read int $lifetime
- * @property-read IAccessTokenStorage $storage
  */
 class AccessTokenFacade implements ITokenFacade
 {
     use SmartObject;
 
-    /** @var IAccessTokenStorage */
-    private $storage;
-
-    /** @var IKeyGenerator */
-    private $keyGenerator;
-
-    /** @var int */
-    private $lifetime;
-
-    public function __construct($lifetime, IKeyGenerator $keyGenerator, IAccessTokenStorage $accessToken)
+    public function __construct(
+        private readonly int $lifetime,
+        private readonly IKeyGenerator $keyGenerator,
+        private readonly IAccessTokenStorage $storage
+    )
     {
-        $this->lifetime = $lifetime;
-        $this->keyGenerator = $keyGenerator;
-        $this->storage = $accessToken;
     }
 
     /**
      * Create access token
-     * @param IClient $client
-     * @param string|int $userId
-     * @param array $scope
-     * @return AccessToken
      */
-    public function create(IClient $client, $userId, array $scope = array())
+    public function create(IClient $client, string|int $userId, array $scope = []): ITokens
     {
         $accessExpires = new DateTime;
         $accessExpires->modify('+' . $this->lifetime . ' seconds');
@@ -63,16 +49,12 @@ class AccessTokenFacade implements ITokenFacade
 
     /**
      * Check access token
-     * @param string $accessToken
-     * @return IAccessToken|NULL
-     *
-     * @throws InvalidAccessTokenException
      */
-    public function getEntity($accessToken)
+    public function getEntity(string $token): ?ITokens
     {
-        $entity = $this->storage->getValidAccessToken($accessToken);
+        $entity = $this->storage->getValidAccessToken($token);
         if (!$entity) {
-            $this->storage->remove($accessToken);
+            $this->storage->remove($token);
             throw new InvalidAccessTokenException;
         }
         return $entity;
@@ -80,9 +62,8 @@ class AccessTokenFacade implements ITokenFacade
 
     /**
      * Get token identifier name
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::ACCESS_TOKEN;
     }
@@ -94,7 +75,7 @@ class AccessTokenFacade implements ITokenFacade
      * Returns access token lifetime
      * @return int
      */
-    public function getLifetime()
+    public function getLifetime(): int
     {
         return $this->lifetime;
     }
@@ -103,9 +84,8 @@ class AccessTokenFacade implements ITokenFacade
      * Get access token storage
      * @return IAccessTokenStorage
      */
-    public function getStorage()
+    public function getStorage(): IAccessTokenStorage
     {
         return $this->storage;
     }
-
 }

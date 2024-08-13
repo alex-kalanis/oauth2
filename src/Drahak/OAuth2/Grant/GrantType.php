@@ -2,16 +2,14 @@
 
 namespace Drahak\OAuth2\Grant;
 
+use Drahak\OAuth2\Grant\Exceptions\InvalidGrantTypeException;
 use Drahak\OAuth2\Http\IInput;
-use Drahak\OAuth2\InvalidClientException;
-use Drahak\OAuth2\Storage\AccessToken;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Drahak\OAuth2\Storage\Clients\IClientStorage;
-use Drahak\OAuth2\Storage\RefreshTokenFacade;
 use Drahak\OAuth2\Storage\TokenContext;
-use Drahak\OAuth2\UnauthorizedClientException;
-use Nette\Object;
+use Drahak\OAuth2\Exceptions\UnauthorizedClientException;
 use Nette\Security\User;
+use Nette\SmartObject;
 
 /**
  * GrantType
@@ -20,49 +18,33 @@ use Nette\Security\User;
  *
  * @property-read string $identifier
  */
-abstract class GrantType extends Object implements IGrant
+abstract class GrantType implements IGrant
 {
+    use SmartObject;
 
-    const SCOPE_KEY = 'scope';
-    const CLIENT_ID_KEY = 'client_id';
-    const CLIENT_SECRET_KEY = 'client_secret';
-    const GRANT_TYPE_KEY = 'grant_type';
+    public const SCOPE_KEY = 'scope';
+    public const CLIENT_ID_KEY = 'client_id';
+    public const CLIENT_SECRET_KEY = 'client_secret';
+    public const GRANT_TYPE_KEY = 'grant_type';
 
-    /** @var IClientStorage */
-    protected $clientStorage;
+    private ?IClient $client;
 
-    /** @var TokenContext */
-    protected $token;
-
-    /** @var IInput */
-    protected $input;
-
-    /** @var User */
-    protected $user;
-
-    /** @var IClient */
-    private $client;
-
-    /**
-     * @param IInput $input
-     * @param TokenContext $token
-     * @param IClientStorage $clientStorage
-     * @param User $user
-     */
-    public function __construct(IInput $input, TokenContext $token, IClientStorage $clientStorage, User $user)
+    public function __construct(
+        protected IInput $input,
+        protected TokenContext $token,
+        protected IClientStorage $clientStorage,
+        protected User $user,
+    )
     {
-        $this->user = $user;
-        $this->input = $input;
-        $this->token = $token;
-        $this->clientStorage = $clientStorage;
     }
 
     /**
      * Get access token
-     * @return string
      * @throws UnauthorizedClientException
+     * @throws InvalidGrantTypeException
+     * @return array
      */
-    public final function getAccessToken()
+    public final function getAccessToken(): array
     {
         if (!$this->getClient()) {
             throw new UnauthorizedClientException('Client is not found');
@@ -77,7 +59,7 @@ abstract class GrantType extends Object implements IGrant
      * Get client
      * @return IClient
      */
-    protected function getClient()
+    protected function getClient(): IClient
     {
         if (!$this->client) {
             $clientId = $this->input->getParameter(self::CLIENT_ID_KEY);
@@ -94,7 +76,7 @@ abstract class GrantType extends Object implements IGrant
      * @throws UnauthorizedClientException
      * @throws InvalidGrantTypeException
      */
-    protected function verifyGrantType()
+    protected function verifyGrantType(): void
     {
         $grantType = $this->input->getParameter(self::GRANT_TYPE_KEY);
         if (!$grantType) {
@@ -112,24 +94,23 @@ abstract class GrantType extends Object implements IGrant
      * Verify request
      * @return void
      */
-    protected abstract function verifyRequest();
+    protected abstract function verifyRequest(): void;
 
     /**
      * Generate access token
-     * @return string
+     * @return array<string, string|int>
      */
-    protected abstract function generateAccessToken();
+    protected abstract function generateAccessToken(): array;
 
     /**
      * Get scope as array - allowed separators: ',' AND ' '
      * @return array
      */
-    protected function getScope()
+    protected function getScope(): array
     {
         $scope = $this->input->getParameter(self::SCOPE_KEY);
         return !is_array($scope) ?
             array_filter(explode(',', str_replace(' ', ',', $scope))) :
             $scope;
     }
-
 }

@@ -9,78 +9,43 @@ use Nette\SmartObject;
  * Base AuthorizationCode entity
  * @package Drahak\OAuth2\Storage\AuthorizationCodes
  * @author Drahomír Hanák
- *
- * @property-read string $authorizationCode
- * @property-read DateTime $expires
- * @property-read string|int $clientId
- * @property-read array $scope
  */
 class AuthorizationCode implements IAuthorizationCode
 {
     use SmartObject;
 
-    /** @var string */
-    private $authorizationCode;
-
-    /** @var DateTime */
-    private $expires;
-
-    /** @var string|int */
-    private $clientId;
-
-    /** @var string|int */
-    private $userId;
-
-    /** @var array */
-    private $scope;
-
-    public function __construct($accessToken, DateTime $expires, $clientId, $userId, array $scope)
+    public function __construct(
+        private readonly string $authorizationCode,
+        private readonly DateTime $expires,
+        private readonly string|int $clientId,
+        private readonly string|int $userId,
+        private readonly array $scope
+    )
     {
-        $this->authorizationCode = $accessToken;
-        $this->expires = $expires;
-        $this->clientId = $clientId;
-        $this->userId = $userId;
-        $this->scope = $scope;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthorizationCode()
+    public function getAuthorizationCode(): string
     {
         return $this->authorizationCode;
     }
 
-    /**
-     * @return int|string
-     */
-    public function getClientId()
+    public function getClientId(): string|int
     {
         return $this->clientId;
     }
 
-    /**
-     * @return int|string
-     */
-    public function getUserId()
+    public function getUserId(): string|int
     {
         return $this->userId;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getExpires()
+    public function getExpires(): DateTime
     {
         return $this->expires;
     }
 
-    /**
-     * @return array
-     */
-    public function getScope()
+    public function getScope(): array
     {
         return $this->scope;
     }
-
 }

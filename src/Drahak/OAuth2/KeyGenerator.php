@@ -14,14 +14,13 @@ class KeyGenerator implements IKeyGenerator
     use SmartObject;
 
     /** Key generator algorithm */
-    const ALGORITHM = 'sha256';
+    public const ALGORITHM = 'sha256';
 
     /**
      * Generate random token
      * @param int $length
-     * @return string
      */
-    public function generate($length = 40)
+    public function generate(int $length = 40): string
     {
         $bytes = openssl_random_pseudo_bytes($length);
         return hash(self::ALGORITHM, $bytes);

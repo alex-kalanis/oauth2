@@ -14,18 +14,17 @@ interface IClient
      * Get client id
      * @return string|int
      */
-    public function getId();
+    public function getId(): string|int;
 
     /**
      * Get client secret code
      * @return string|int
      */
-    public function getSecret();
+    public function getSecret(): string|int;
 
     /**
      * Get client redirect URL
      * @return string
      */
-    public function getRedirectUrl();
-
+    public function getRedirectUrl(): string;
 }

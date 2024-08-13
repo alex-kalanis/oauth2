@@ -15,21 +15,19 @@ interface IRefreshTokenStorage
      * @param IRefreshToken $refreshToken
      * @return void
      */
-    public function store(IRefreshToken $refreshToken);
+    public function store(IRefreshToken $refreshToken): void;
 
     /**
      * Remove refresh token
      * @param string $refreshToken
      * @return void
      */
-    public function remove($refreshToken);
+    public function remove(string $refreshToken): void;
 
     /**
      * Validate refresh token
      * @param string $refreshToken
      * @return IRefreshToken|NULL
      */
-    public function getValidRefreshToken($refreshToken);
-
-
+    public function getValidRefreshToken(string $refreshToken): ?IRefreshToken;
 }

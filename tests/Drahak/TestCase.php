@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests;
 
 use Mockista\Registry;
@@ -9,15 +10,14 @@ use Tester;
  * @package Tests
  * @author Drahomír Hanák
  */
-class TestCase extends Tester\TestCase
+abstract class TestCase extends Tester\TestCase
 {
 
     /** @var Registry */
     protected $mockista;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockista = new Registry;
     }
-
 }

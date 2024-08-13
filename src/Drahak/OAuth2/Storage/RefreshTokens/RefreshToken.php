@@ -9,69 +9,43 @@ use Nette\SmartObject;
  * RefreshToken
  * @package Drahak\OAuth2\Storage\RefreshTokens
  * @author Drahomír Hanák
- *
- * @property-read string $refreshToken
- * @property-read DateTime $expires
- * @property-read string|int $clientId
  */
 class RefreshToken implements IRefreshToken
 {
     use SmartObject;
 
-    /** @var string */
-    private $refreshToken;
-
-    /** @var DateTime */
-    private $expires;
-
-    /** @var string|int */
-    private $clientId;
-
-    /** @var string|int */
-    private $userId;
-
-    public function __construct($refreshToken, DateTime $expires, $clientId, $userId)
+    public function __construct(
+        private readonly string $refreshToken,
+        private readonly DateTime $expires,
+        private readonly string|int $clientId,
+        private readonly string|int $userId,
+        private readonly array $scope = [],
+    )
     {
-        $this->refreshToken = $refreshToken;
-        $this->clientId = $clientId;
-        $this->expires = $expires;
-        $this->userId = $userId;
     }
 
-    /**
-     * Get refresh token
-     * @return string
-     */
-    public function getRefreshToken()
+    public function getRefreshToken(): string
     {
         return $this->refreshToken;
     }
 
-    /**
-     * Get expire time
-     * @return DateTime
-     */
-    public function getExpires()
+    public function getExpires(): DateTime
     {
         return $this->expires;
     }
 
-    /**
-     * Get client id
-     * @return string|int
-     */
-    public function getClientId()
+    public function getClientId(): string|int
     {
         return $this->clientId;
     }
 
-
-    /**
-     * @return int|string
-     */
-    public function getUserId()
+    public function getUserId(): string|int
     {
         return $this->userId;
     }
 
+    public function getScope(): array
+    {
+        return $this->scope;
+    }
 }

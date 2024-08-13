@@ -3,13 +3,12 @@
 namespace Drahak\OAuth2\Storage\NDB;
 
 use DateTime;
-use Drahak\OAuth2\InvalidScopeException;
+use Drahak\OAuth2\Exceptions\InvalidScopeException;
 use Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCode;
 use Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCode;
 use Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
-use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\SmartObject;
 use PDOException;
@@ -23,37 +22,33 @@ class AuthorizationCodeStorage implements IAuthorizationCodeStorage
 {
     use SmartObject;
 
-    /** @var Context */
-    private $context;
-
-    public function __construct(Context $context)
+    public function __construct(
+        private readonly Explorer $context
+    )
     {
-        $this->context = $context;
     }
 
     /**
      * Store authorization code
-     * @param IAuthorizationCode $authorizationCode
      * @throws InvalidScopeException
      */
-    public function store(IAuthorizationCode $authorizationCode)
+    public function store(IAuthorizationCode $authorizationCode): void
     {
-
-        $this->getTable()->insert(array(
+        $this->getTable()->insert([
             'authorization_code' => $authorizationCode->getAuthorizationCode(),
             'client_id' => $authorizationCode->getClientId(),
             'user_id' => $authorizationCode->getUserId(),
-            'expires' => $authorizationCode->getExpires()
-        ));
+            'expires' => $authorizationCode->getExpires(),
+        ]);
 
-        $connection = $this->getTable()->getConnection();
+        $connection = $this->context->getConnection();
         $connection->beginTransaction();
         try {
             foreach ($authorizationCode->getScope() as $scope) {
-                $this->getScopeTable()->insert(array(
+                $this->getScopeTable()->insert([
                     'authorization_code' => $authorizationCode->getAuthorizationCode(),
-                    'scope_name' => $scope
-                ));
+                    'scope_name' => $scope,
+                ]);
             }
         } catch (PDOException $e) {
             // MySQL error 1452 - Cannot add or update a child row: a foreign key constraint fails
@@ -67,20 +62,17 @@ class AuthorizationCodeStorage implements IAuthorizationCodeStorage
 
     /**
      * Get authorization code table
-     * @return Selection
      */
-    protected function getTable()
+    protected function getTable(): Selection
     {
         return $this->context->table('oauth_authorization_code');
     }
 
     /******************** IAuthorizationCodeStorage ********************/
-
     /**
      * Get scope table
-     * @return Selection
      */
-    protected function getScopeTable()
+    protected function getScopeTable(): Selection
     {
         return $this->context->table('oauth_authorization_code_scope');
     }
@@ -90,28 +82,29 @@ class AuthorizationCodeStorage implements IAuthorizationCodeStorage
      * @param string $authorizationCode
      * @return void
      */
-    public function remove($authorizationCode)
+    public function remove(string $authorizationCode): void
     {
-        $this->getTable()->where(array('authorization_code' => $authorizationCode))->delete();
+        $this->getTable()->where(['authorization_code' => $authorizationCode])->delete();
     }
 
     /**
      * Validate authorization code
      * @param string $authorizationCode
-     * @return IAuthorizationCode
+     * @return IAuthorizationCode|null
      */
-    public function getValidAuthorizationCode($authorizationCode)
+    public function getValidAuthorizationCode(string $authorizationCode): ?IAuthorizationCode
     {
-        /** @var ActiveRow $row */
         $row = $this->getTable()
-            ->where(array('authorization_code' => $authorizationCode))
+            ->where(['authorization_code' => $authorizationCode])
             ->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
             ->fetch();
 
-        if (!$row) return NULL;
+        if (!$row) {
+            return NULL;
+        }
 
         $scopes = $this->getScopeTable()
-            ->where(array('authorization_code' => $authorizationCode))
+            ->where(['authorization_code' => $authorizationCode])
             ->fetchPairs('scope_name');
 
         return new AuthorizationCode(
@@ -122,6 +115,4 @@ class AuthorizationCodeStorage implements IAuthorizationCodeStorage
             array_keys($scopes)
         );
     }
-
-
 }

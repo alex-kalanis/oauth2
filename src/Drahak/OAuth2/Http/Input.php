@@ -3,43 +3,42 @@
 namespace Drahak\OAuth2\Http;
 
 use Nette\Http\IRequest;
-use Nette\Object;
+use Nette\SmartObject;
 
 /**
  * Input parser
  * @package Drahak\OAuth2\Http
  * @author Drahomír Hanák
  */
-class Input extends Object implements IInput
+class Input implements IInput
 {
-
-    /** @var IRequest */
-    private $request;
+    use SmartObject;
 
     /** @var array */
-    private $data;
+    private array $data;
 
-    public function __construct(IRequest $request)
+    public function __construct(
+        private readonly IRequest $request
+    )
     {
-        $this->request = $request;
     }
 
     /**
      * Get single parameter by key
-     * @param string $key
-     * @return string|int
+     * @param string $name
+     * @return string|int|null
      */
-    public function getParameter($key)
+    public function getParameter(string $name): string|int|null
     {
         $parameters = $this->getParameters();
-        return isset($parameters[$key]) ? $parameters[$key] : NULL;
+        return $parameters[$name] ?? NULL;
     }
 
     /**
      * Get all parameters
      * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         if (!$this->data) {
             if ($this->request->getQuery()) {
@@ -58,22 +57,20 @@ class Input extends Object implements IInput
      * @param string $data
      * @return array
      */
-    private function parseRequest($data)
+    private function parseRequest(string $data): array
     {
-        $result = array();
+        $result = [];
         parse_str($data, $result);
         return $result;
     }
 
     /**
      * Get authorization token from header - Authorization: Bearer
-     * @return string
+     * @return string|null
      */
-    public function getAuthorization()
+    public function getAuthorization(): ?string
     {
-        $authorization = explode(' ', $this->request->getHeader('Authorization'));
-        return isset($authorization[1]) ? $authorization[1] : NULL;
+        $authorization = explode(' ', (string) $this->request->getHeader('Authorization'));
+        return $authorization[1] ?? NULL;
     }
-
-
 }

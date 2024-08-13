@@ -2,7 +2,9 @@
 
 namespace Drahak\OAuth2\Storage;
 
+use Drahak\OAuth2\Exceptions\InvalidScopeException;
 use Drahak\OAuth2\Storage\Clients\IClient;
+use Drahak\OAuth2\Storage\Exceptions\TokenException;
 
 /**
  * ITokenFacade
@@ -13,29 +15,31 @@ interface ITokenFacade
 {
 
     /** Default token names as defined in specification */
-    const ACCESS_TOKEN = 'access_token';
-    const REFRESH_TOKEN = 'refresh_token';
-    const AUTHORIZATION_CODE = 'authorization_code';
+    public const ACCESS_TOKEN = 'access_token';
+    public const REFRESH_TOKEN = 'refresh_token';
+    public const AUTHORIZATION_CODE = 'authorization_code';
 
     /**
      * Create token
      * @param IClient $client
-     * @param int $userId
+     * @param string|int $userId
      * @param array $scope
-     * @return mixed
+     * @throws InvalidScopeException
+     * @return ITokens|null
      */
-    public function create(IClient $client, $userId, array $scope = array());
+    public function create(IClient $client, string|int $userId, array $scope = []): ?ITokens;
 
     /**
      * Returns token entity
      * @param string $token
+     * @throws TokenException
+     * @return ITokens|null
      */
-    public function getEntity($token);
+    public function getEntity(string $token): ?ITokens;
 
     /**
      * Get token identifier name
      * @return string
      */
-    public function getIdentifier();
-
+    public function getIdentifier(): string;
 }

@@ -17,6 +17,5 @@ interface IResourcePresenter extends IPresenter
      * @param string $accessToken
      * @return void
      */
-    public function checkAccessToken($accessToken);
-
+    public function checkAccessToken(string $accessToken): void;
 }

@@ -11,22 +11,21 @@ interface IGrant
 {
 
     /** Grant types defined in specification */
-    const AUTHORIZATION_CODE = 'authorization_code';
-    const CLIENT_CREDENTIALS = 'client_credentials';
-    const REFRESH_TOKEN = 'refresh_token';
-    const IMPLICIT = 'implicit';
-    const PASSWORD = 'password';
+    public const AUTHORIZATION_CODE = 'authorization_code';
+    public const CLIENT_CREDENTIALS = 'client_credentials';
+    public const REFRESH_TOKEN = 'refresh_token';
+    public const IMPLICIT = 'implicit';
+    public const PASSWORD = 'password';
 
     /**
      * Get identifier string to this grant type
      * @return string
      */
-    public function getIdentifier();
+    public function getIdentifier(): string;
 
     /**
      * Get access token
      * @return array
      */
-    public function getAccessToken();
-
+    public function getAccessToken(): array;
 }

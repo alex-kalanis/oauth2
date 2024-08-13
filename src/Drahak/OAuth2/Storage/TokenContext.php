@@ -2,7 +2,7 @@
 
 namespace Drahak\OAuth2\Storage;
 
-use Drahak\OAuth2\InvalidStateException;
+use Drahak\OAuth2\Exceptions\InvalidStateException;
 use Nette\SmartObject;
 
 /**
@@ -14,14 +14,13 @@ class TokenContext
 {
     use SmartObject;
 
-    /** @var array */
-    private $tokens = array();
+    /** @var array<ITokenFacade> */
+    private array $tokens = [];
 
     /**
      * Add identifier to collection
-     * @param ITokenFacade $token
      */
-    public function addToken(ITokenFacade $token)
+    public function addToken(ITokenFacade $token): void
     {
         $this->tokens[$token->getIdentifier()] = $token;
     }
@@ -33,7 +32,7 @@ class TokenContext
      *
      * @throws InvalidStateException
      */
-    public function getToken($identifier)
+    public function getToken(string $identifier): ITokenFacade
     {
         if (!isset($this->tokens[$identifier])) {
             throw new InvalidStateException('Token called "' . $identifier . '" not found in Token context');
@@ -41,5 +40,4 @@ class TokenContext
 
         return $this->tokens[$identifier];
     }
-
 }

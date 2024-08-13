@@ -18,51 +18,56 @@ class ClientStorage implements IClientStorage
 {
     use SmartObject;
 
-    /** @var Explorer */
-    private $context;
-
-    public function __construct(Explorer $context)
+    public function __construct(
+        private readonly Explorer $context
+    )
     {
-        $this->context = $context;
     }
 
     /**
      * Find client by ID and/or secret key
-     * @param string $clientId
+     * @param string|int $clientId
      * @param string|null $clientSecret
-     * @return IClient
+     * @return IClient|null
      */
-    public function getClient($clientId, $clientSecret = NULL)
+    public function getClient(string|int $clientId, #[\SensitiveParameter] string|null $clientSecret = NULL): ?IClient
     {
-        if (!$clientId) return NULL;
+        if (!$clientId) {
+            return NULL;
+        }
 
-        $selection = $this->getTable()->where(array('client_id' => $clientId));
+        $selection = $this->getTable()->where(['client_id' => $clientId]);
         if ($clientSecret) {
-            $selection->where(array('secret' => $clientSecret));
+            $selection->where(['secret' => $clientSecret]);
         }
         $data = $selection->fetch();
-        if (!$data) return NULL;
-        return new Client($data['client_id'], $data['secret'], $data['redirect_url']);
+        if (!$data) {
+            return NULL;
+        }
+        return new Client(
+            $data['client_id'],
+            $data['secret'],
+            $data['redirect_url']
+        );
     }
 
     /**
      * Get client table selection
-     * @return Selection
      */
-    protected function getTable()
+    protected function getTable(): Selection
     {
         return $this->context->table('oauth_client');
     }
 
     /**
      * Can client use given grant type
-     * @param string $clientId
+     * @param string|int $clientId
      * @param string $grantType
      * @return bool
      */
-    public function canUseGrantType($clientId, $grantType)
+    public function canUseGrantType(string|int $clientId, string $grantType): bool
     {
-        $result = $this->getTable()->getConnection()->query('
+        $result = $this->context->query('
 			SELECT g.name
 			FROM oauth_client_grant AS cg
 			RIGHT JOIN oauth_grant AS g ON cg.grant_id = cg.grant_id AND g.name = ?

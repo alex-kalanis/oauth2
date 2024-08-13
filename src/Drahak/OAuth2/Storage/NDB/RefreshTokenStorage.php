@@ -9,7 +9,6 @@ use Drahak\OAuth2\Storage\RefreshTokens\RefreshToken;
 use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\Selection;
-use Nette\Object;
 use Nette\SmartObject;
 
 /**
@@ -21,35 +20,30 @@ class RefreshTokenStorage implements IRefreshTokenStorage
 {
     use SmartObject;
 
-    /** @var Explorer */
-    private $context;
-
-    public function __construct(Explorer $context)
+    public function __construct(
+        private readonly Explorer $context
+    )
     {
-        $this->context = $context;
     }
 
     /**
      * Store refresh token
-     * @param IRefreshToken $refreshToken
      */
-    public function store(IRefreshToken $refreshToken)
+    public function store(IRefreshToken $refreshToken): void
     {
-        $this->getTable()->insert(array(
+        $this->getTable()->insert([
             'refresh_token' => $refreshToken->getRefreshToken(),
             'client_id' => $refreshToken->getClientId(),
             'user_id' => $refreshToken->getUserId(),
-            'expires' => $refreshToken->getExpires()
-        ));
+            'expires' => $refreshToken->getExpires(),
+        ]);
     }
 
     /******************** IRefreshTokenStorage ********************/
-
     /**
      * Get authorization code table
-     * @return Selection
      */
-    protected function getTable()
+    protected function getTable(): Selection
     {
         return $this->context->table('oauth_refresh_token');
     }
@@ -58,9 +52,9 @@ class RefreshTokenStorage implements IRefreshTokenStorage
      * Remove refresh token
      * @param string $refreshToken
      */
-    public function remove($refreshToken)
+    public function remove(string $refreshToken): void
     {
-        $this->getTable()->where(array('refresh_token' => $refreshToken))->delete();
+        $this->getTable()->where(['refresh_token' => $refreshToken])->delete();
     }
 
     /**
@@ -68,14 +62,16 @@ class RefreshTokenStorage implements IRefreshTokenStorage
      * @param string $refreshToken
      * @return IRefreshToken|NULL
      */
-    public function getValidRefreshToken($refreshToken)
+    public function getValidRefreshToken(string $refreshToken): ?IRefreshToken
     {
         $row = $this->getTable()
-            ->where(array('refresh_token' => $refreshToken))
+            ->where(['refresh_token' => $refreshToken])
             ->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
             ->fetch();
 
-        if (!$row) return NULL;
+        if (!$row) {
+            return NULL;
+        }
 
         return new RefreshToken(
             $row['refresh_token'],
@@ -84,5 +80,4 @@ class RefreshTokenStorage implements IRefreshTokenStorage
             $row['user_id']
         );
     }
-
 }

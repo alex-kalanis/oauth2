@@ -19,11 +19,11 @@ interface IOAuthPresenter extends IPresenter
      * @param string|null $scope
      * @return void
      */
-    public function issueAuthorizationCode($responseType, $redirectUrl, $scope = NULL);
+    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = NULL): void;
 
     /**
      * Issue an access token
      * @return void
      */
-    public function issueAccessToken();
+    public function issueAccessToken(): void;
 }

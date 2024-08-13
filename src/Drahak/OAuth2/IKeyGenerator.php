@@ -15,6 +15,5 @@ interface IKeyGenerator
      * @param int $length
      * @return string
      */
-    public function generate($length = 40);
-
+    public function generate(int $length = 40): string;
 }

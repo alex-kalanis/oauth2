@@ -13,17 +13,17 @@ interface IClientStorage
     /**
      * Get client data
      * @param string|int $clientId
-     * @param string $clientSecret
-     * @return IClient
+     * @param string|null $clientSecret
+     * @return IClient|null
      */
-    public function getClient($clientId, $clientSecret = NULL);
+    public function getClient(string|int $clientId, ?string $clientSecret = NULL): ?IClient;
 
     /**
      * Can client use given grant type
-     * @param string $clientId
+     * @param string|int $clientId
      * @param string $grantType
      * @return bool
      */
-    public function canUseGrantType($clientId, $grantType);
+    public function canUseGrantType(string|int $clientId, string $grantType): bool;
 
 }

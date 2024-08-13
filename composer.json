@@ -12,7 +12,9 @@
 		}
 	],
 	"require": {
-		"php": ">= 8.0.0",
+		"php": ">= 8.1.0",
+		"ext-pdo": "*",
+		"ext-openssl": "*",
 		"nette/nette": "^3.2"
 	},
 	"require-dev": {
@@ -23,12 +25,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Drahak\\OAuth2": "src/Drahak/OAuth2"
-		},
-		"classmap": [
-			"src/Drahak/OAuth2/exceptions.php",
-			"src/Drahak/OAuth2/Grant/exceptions.php",
-			"src/Drahak/OAuth2/Storage/exceptions.php"
-		]
+			"Drahak\\OAuth2\\": "src/Drahak/OAuth2"
+		}
 	}
 }

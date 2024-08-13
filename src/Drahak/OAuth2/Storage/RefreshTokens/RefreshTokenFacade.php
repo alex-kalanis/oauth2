@@ -5,46 +5,32 @@ namespace Drahak\OAuth2\Storage\RefreshTokens;
 use DateTime;
 use Drahak\OAuth2\IKeyGenerator;
 use Drahak\OAuth2\Storage\Clients\IClient;
-use Drahak\OAuth2\Storage\InvalidRefreshTokenException;
+use Drahak\OAuth2\Storage\Exceptions\InvalidRefreshTokenException;
 use Drahak\OAuth2\Storage\ITokenFacade;
+use Drahak\OAuth2\Storage\ITokens;
 use Nette\SmartObject;
 
 /**
  * RefreshToken
  * @package Drahak\OAuth2\Token
  * @author Drahomír Hanák
- *
- * @property-read int $lifetime
- * @property-read IRefreshTokenStorage $storage
  */
 class RefreshTokenFacade implements ITokenFacade
 {
     use SmartObject;
 
-    /** @var IRefreshTokenStorage */
-    private $storage;
-
-    /** @var IKeyGenerator */
-    private $keyGenerator;
-
-    /** @var int */
-    private $lifetime;
-
-    public function __construct($lifetime, IKeyGenerator $keyGenerator, IRefreshTokenStorage $storage)
+    public function __construct(
+        private readonly int $lifetime,
+        private readonly IKeyGenerator $keyGenerator,
+        private readonly IRefreshTokenStorage $storage
+    )
     {
-        $this->lifetime = $lifetime;
-        $this->storage = $storage;
-        $this->keyGenerator = $keyGenerator;
     }
 
     /**
      * Create new refresh token
-     * @param IClient $client
-     * @param int $userId
-     * @param array $scope
-     * @return RefreshToken
      */
-    public function create(IClient $client, $userId, array $scope = array())
+    public function create(IClient $client, string|int $userId, array $scope = []): ?ITokens
     {
         $expires = new DateTime;
         $expires->modify('+' . $this->lifetime . ' seconds');
@@ -61,16 +47,12 @@ class RefreshTokenFacade implements ITokenFacade
 
     /**
      * Get refresh token entity
-     * @param string $refreshToken
-     * @return IRefreshToken|NULL
-     *
-     * @throws InvalidRefreshTokenException
      */
-    public function getEntity($refreshToken)
+    public function getEntity(string $token): ?ITokens
     {
-        $entity = $this->storage->getValidRefreshToken($refreshToken);
+        $entity = $this->storage->getValidRefreshToken($token);
         if (!$entity) {
-            $this->storage->remove($refreshToken);
+            $this->storage->remove($token);
             throw new InvalidRefreshTokenException;
         }
         return $entity;
@@ -78,9 +60,8 @@ class RefreshTokenFacade implements ITokenFacade
 
     /**
      * Get token identifier name
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::REFRESH_TOKEN;
     }
@@ -92,7 +73,7 @@ class RefreshTokenFacade implements ITokenFacade
      * Get token lifetime
      * @return int
      */
-    public function getLifetime()
+    public function getLifetime(): int
     {
         return $this->lifetime;
     }
@@ -101,9 +82,8 @@ class RefreshTokenFacade implements ITokenFacade
      * Get storage
      * @return IRefreshTokenStorage
      */
-    public function getStorage()
+    public function getStorage(): IRefreshTokenStorage
     {
         return $this->storage;
     }
-
 }

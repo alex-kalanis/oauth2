@@ -1,6 +1,6 @@
 <?php
 
-namespace Drahak\OAuth2\Grant;
+namespace Drahak\OAuth2\Grant\Exceptions;
 
 use Exception;
 

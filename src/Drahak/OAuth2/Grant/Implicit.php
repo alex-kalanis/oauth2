@@ -14,9 +14,8 @@ class Implicit extends GrantType
 
     /**
      * Get identifier string to this grant type
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::IMPLICIT;
     }
@@ -24,7 +23,7 @@ class Implicit extends GrantType
     /**
      * Verify grant type
      */
-    protected function verifyGrantType()
+    protected function verifyGrantType(): void
     {
     }
 
@@ -32,24 +31,23 @@ class Implicit extends GrantType
      * Verify request
      * @return void
      */
-    protected function verifyRequest()
+    protected function verifyRequest(): void
     {
     }
 
     /**
      * Generate access token
-     * @return string
+     * @return array<string, string|int>
      */
-    protected function generateAccessToken()
+    protected function generateAccessToken(): array
     {
         $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
         $accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 
-        return array(
+        return [
             'access_token' => $accessToken->getAccessToken(),
             'expires_in' => $accessTokenStorage->getLifetime(),
             'token_type' => 'bearer'
-        );
+        ];
     }
-
 }

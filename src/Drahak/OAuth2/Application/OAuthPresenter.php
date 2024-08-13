@@ -5,17 +5,17 @@ namespace Drahak\OAuth2\Application;
 use Drahak\OAuth2\Grant\GrantContext;
 use Drahak\OAuth2\Grant\GrantType;
 use Drahak\OAuth2\Grant\IGrant;
-use Drahak\OAuth2\Grant\InvalidGrantTypeException;
-use Drahak\OAuth2\InvalidGrantException;
-use Drahak\OAuth2\InvalidStateException;
-use Drahak\OAuth2\OAuthException;
+use Drahak\OAuth2\Exceptions\InvalidGrantException;
+use Drahak\OAuth2\Exceptions\InvalidStateException;
+use Drahak\OAuth2\Exceptions\OAuthException;
 use Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade;
 use Drahak\OAuth2\Storage\Clients\IClient;
 use Drahak\OAuth2\Storage\Clients\IClientStorage;
-use Drahak\OAuth2\Storage\InvalidAuthorizationCodeException;
-use Drahak\OAuth2\Storage\TokenException;
-use Drahak\OAuth2\UnauthorizedClientException;
-use Drahak\OAuth2\UnsupportedResponseTypeException;
+use Drahak\OAuth2\Storage\Exceptions\InvalidAuthorizationCodeException;
+use Drahak\OAuth2\Storage\Exceptions\TokenException;
+use Drahak\OAuth2\Exceptions\UnauthorizedClientException;
+use Drahak\OAuth2\Exceptions\UnsupportedResponseTypeException;
+use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Http\Url;
@@ -30,39 +30,31 @@ use Traversable;
  */
 class OAuthPresenter extends Presenter implements IOAuthPresenter
 {
-
-    /** @var AuthorizationCodeFacade */
-    protected $authorizationCode;
-    /** @var IClientStorage */
-    protected $clientStorage;
-    /** @var IClient */
-    protected $client;
-    /** @var GrantContext */
-    private $grantContext;
+    protected AuthorizationCodeFacade $authorizationCode;
+    protected IClientStorage $clientStorage;
+    protected IClient $client;
+    private GrantContext $grantContext;
 
     /**
      * Inject grant strategy context
-     * @param GrantContext $grantContext
      */
-    public function injectGrant(GrantContext $grantContext)
+    public function injectGrant(GrantContext $grantContext): void
     {
         $this->grantContext = $grantContext;
     }
 
     /**
      * Inject token manager - authorization code
-     * @param AuthorizationCodeFacade $authorizationCode
      */
-    public function injectAuthorizationCode(AuthorizationCodeFacade $authorizationCode)
+    public function injectAuthorizationCode(AuthorizationCodeFacade $authorizationCode): void
     {
         $this->authorizationCode = $authorizationCode;
     }
 
     /**
      * Injet client storage
-     * @param IClientStorage $clientStorage
      */
-    public function injectClientStorage(IClientStorage $clientStorage)
+    public function injectClientStorage(IClientStorage $clientStorage): void
     {
         $this->clientStorage = $clientStorage;
     }
@@ -72,7 +64,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @param string $redirectUrl
      * @param string|null $scope
      */
-    public function issueAuthorizationCode($responseType, $redirectUrl, $scope = NULL)
+    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = NULL): void
     {
         try {
             if ($responseType !== 'code') {
@@ -84,24 +76,23 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
             $scope = array_filter(explode(',', str_replace(' ', ',', $scope)));
             $code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
-            $data = array(
-                'code' => $code->getAuthorizationCode()
-            );
+            $data = ['code' => $code->getAuthorizationCode()];
             $this->oauthResponse($data, $redirectUrl);
         } catch (OAuthException $e) {
             $this->oauthError($e);
-        } catch (TokenException $e) {
+        } catch (TokenException) {
             $this->oauthError(new InvalidGrantException);
         }
     }
 
     /**
      * Send OAuth response
-     * @param array|Traversable $data
+     * @param iterable $data
      * @param string|null $redirectUrl
      * @param int $code
      */
-    public function oauthResponse($data, $redirectUrl = NULL, $code = 200)
+    #[NoReturn]
+    public function oauthResponse(iterable $data, ?string $redirectUrl = NULL, int $code = 200): void
     {
         if ($data instanceof Traversable) {
             $data = iterator_to_array($data);
@@ -129,14 +120,11 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
     /**
      * Provide OAuth2 error response (redirect or at least JSON)
-     * @param OAuthException $exception
      */
-    public function oauthError(OAuthException $exception)
+    #[NoReturn]
+    public function oauthError(OAuthException $exception): void
     {
-        $error = array(
-            'error' => $exception->getKey(),
-            'error_description' => $exception->getMessage()
-        );
+        $error = ['error' => $exception->getKey(), 'error_description' => $exception->getMessage()];
         $this->oauthResponse($error, $this->getParameter('redirect_uri'), $exception->getCode());
     }
 
@@ -146,10 +134,9 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @param string|null $redirectUrl
      *
      * @throws InvalidAuthorizationCodeException
-     * @throws InvalidGrantTypeException
      * @throws InvalidStateException
      */
-    public function issueAccessToken($grantType = NULL, $redirectUrl = NULL)
+    public function issueAccessToken(?string $grantType = NULL, ?string $redirectUrl = NULL): void
     {
         try {
             if ($grantType !== NULL) {
@@ -162,7 +149,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
             $this->oauthResponse($response, $redirectUrl);
         } catch (OAuthException $e) {
             $this->oauthError($e);
-        } catch (TokenException $e) {
+        } catch (TokenException) {
             $this->oauthError(new InvalidGrantException);
         }
     }
@@ -172,7 +159,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @return IGrant
      * @throws UnsupportedResponseTypeException
      */
-    public function getGrantType()
+    public function getGrantType(): IGrant
     {
         $request = $this->getHttpRequest();
         $grantType = $request->getPost(GrantType::GRANT_TYPE_KEY);
@@ -186,7 +173,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
     /**
      * On presenter startup
      */
-    protected function startup()
+    protected function startup(): void
     {
         parent::startup();
         $this->client = $this->clientStorage->getClient(
@@ -194,5 +181,4 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
             $this->getParameter(GrantType::CLIENT_SECRET_KEY)
         );
     }
-
 }

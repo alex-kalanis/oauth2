@@ -2,8 +2,8 @@
 
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\InvalidRequestException;
-use Drahak\OAuth2\InvalidStateException;
+use Drahak\OAuth2\Exceptions\InvalidRequestException;
+use Drahak\OAuth2\Exceptions\InvalidStateException;
 use Drahak\OAuth2\Storage\ITokenFacade;
 use Nette\Security\AuthenticationException;
 
@@ -17,9 +17,8 @@ class Password extends GrantType
 
     /**
      * Get identifier string to this grant type
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::PASSWORD;
     }
@@ -28,9 +27,9 @@ class Password extends GrantType
      * Verify request
      *
      * @throws InvalidStateException
-     * @throws AuthenticationException
+     * @throws InvalidRequestException
      */
-    protected function verifyRequest()
+    protected function verifyRequest(): void
     {
         $password = $this->input->getParameter('password');
         $username = $this->input->getParameter('username');
@@ -47,9 +46,9 @@ class Password extends GrantType
 
     /**
      * Generate access token
-     * @return string
+     * @return array<string, string|int>
      */
-    protected function generateAccessToken()
+    protected function generateAccessToken(): array
     {
         $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
         $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
@@ -57,12 +56,11 @@ class Password extends GrantType
         $accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
         $refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 
-        return array(
+        return [
             'access_token' => $accessToken->getAccessToken(),
             'expires_in' => $accessTokenStorage->getLifetime(),
             'token_type' => 'bearer',
-            'refresh_token' => $refreshToken->getRefreshToken()
-        );
+            'refresh_token' => $refreshToken->getRefreshToken(),
+        ];
     }
-
 }

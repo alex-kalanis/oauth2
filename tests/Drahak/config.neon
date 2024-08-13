@@ -1,10 +1,10 @@
 parameters:
     database:
         driver: mysql
-        host: localhost
-        dbname: oauth_test
+        host: libs-oauth-mysql
+        dbname: testing_one
         user: root
-        password:
+        password: root_somewhere
 
 extensions:
     oauth2: Drahak\OAuth2\DI\Extension

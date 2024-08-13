@@ -2,25 +2,25 @@
 
 namespace Drahak\OAuth2\Grant;
 
-use Drahak\OAuth2\InvalidStateException;
-use Nette\Object;
+use Drahak\OAuth2\Exceptions\InvalidStateException;
+use Nette\SmartObject;
 
 /**
  * GrantContext
  * @package Drahak\OAuth2\Grant
  * @author Drahomír Hanák
  */
-class GrantContext extends Object
+class GrantContext
 {
+    use SmartObject;
 
-    /** @var array */
-    private $grantTypes = array();
+    /** @var array<IGrant> */
+    private array $grantTypes = [];
 
     /**
      * Add grant type
-     * @param IGrant $grantType
      */
-    public function addGrantType(IGrant $grantType)
+    public function addGrantType(IGrant $grantType): void
     {
         $this->grantTypes[$grantType->getIdentifier()] = $grantType;
     }
@@ -29,7 +29,7 @@ class GrantContext extends Object
      * Remove grant type from strategy context
      * @param string $grantType
      */
-    public function removeGrantType($grantType)
+    public function removeGrantType(string $grantType): void
     {
         unset($this->grantTypes[$grantType]);
     }
@@ -37,16 +37,15 @@ class GrantContext extends Object
     /**
      * Get grant type
      * @param string $grantType
-     * @return GrantType
+     * @return IGrant
      *
      * @throws InvalidStateException
      */
-    public function getGrantType($grantType)
+    public function getGrantType(string $grantType): IGrant
     {
         if (!isset($this->grantTypes[$grantType])) {
             throw new InvalidStateException('Grant type ' . $grantType . ' is not registered in GrantContext');
         }
         return $this->grantTypes[$grantType];
     }
-
 }

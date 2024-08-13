@@ -14,19 +14,18 @@ interface IInput
      * Get all parameters
      * @return array
      */
-    public function getParameters();
+    public function getParameters(): array;
 
     /**
      * Get single parameter value by name
      * @param string $name
-     * @return string|int
+     * @return string|int|null
      */
-    public function getParameter($name);
+    public function getParameter(string $name): string|int|null;
 
     /**
      * Get authorization token
-     * @return string
+     * @return string|null
      */
-    public function getAuthorization();
-
+    public function getAuthorization(): string|null;
 }

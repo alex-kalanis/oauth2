@@ -2,10 +2,10 @@
 
 namespace Drahak\OAuth2\DI;
 
-use Nette\Configurator;
+use Nette\Bootstrap\Configurator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\Definition;
 
 /**
  * OAuth2 compiler extension
@@ -19,19 +19,20 @@ class Extension extends CompilerExtension
      * Default DI settings
      * @var array
      */
-    protected $defaults = array(
-        'accessTokenStorage' => 'Drahak\OAuth2\Storage\NDB\AccessTokenStorage',
-        'authorizationCodeStorage' => 'Drahak\OAuth2\Storage\NDB\AuthorizationCodeStorage',
-        'clientStorage' => 'Drahak\OAuth2\Storage\NDB\ClientStorage',
-        'refreshTokenStorage' => 'Drahak\OAuth2\Storage\NDB\RefreshTokenStorage',
-        'accessTokenLifetime' => 3600, // 1 hour
-        'refreshTokenLifetime' => 36000, // 10 hours
-        'authorizationCodeLifetime' => 360 // 6 minutes
-    );
+    protected $defaults = [
+        'accessTokenStorage' => \Drahak\OAuth2\Storage\NDB\AccessTokenStorage::class,
+        'authorizationCodeStorage' => \Drahak\OAuth2\Storage\NDB\AuthorizationCodeStorage::class,
+        'clientStorage' => \Drahak\OAuth2\Storage\NDB\ClientStorage::class,
+        'refreshTokenStorage' => \Drahak\OAuth2\Storage\NDB\RefreshTokenStorage::class,
+        'accessTokenLifetime' => 3600,
+        // 1 hour
+        'refreshTokenLifetime' => 36000,
+        // 10 hours
+        'authorizationCodeLifetime' => 360,
+    ];
 
     /**
      * Register OAuth2 extension
-     * @param Configurator $configurator
      */
     public static function install(Configurator $configurator)
     {
@@ -46,74 +47,73 @@ class Extension extends CompilerExtension
     public function loadConfiguration()
     {
         $container = $this->getContainerBuilder();
-        $config = $this->getConfig($this->defaults);
+        $config = $this->getConfig();
 
         // Library common
         $container->addDefinition($this->prefix('keyGenerator'))
-            ->setClass('Drahak\OAuth2\KeyGenerator');
+            ->setType(\Drahak\OAuth2\KeyGenerator::class);
 
         $container->addDefinition($this->prefix('input'))
-            ->setClass('Drahak\OAuth2\Http\Input');
+            ->setType(\Drahak\OAuth2\Http\Input::class);
 
         // Grant types
         $container->addDefinition($this->prefix('authorizationCodeGrant'))
-            ->setClass('Drahak\OAuth2\Grant\AuthorizationCode');
+            ->setType(\Drahak\OAuth2\Grant\AuthorizationCode::class);
         $container->addDefinition($this->prefix('refreshTokenGrant'))
-            ->setClass('Drahak\OAuth2\Grant\RefreshToken');
+            ->setType(\Drahak\OAuth2\Grant\RefreshToken::class);
         $container->addDefinition($this->prefix('passwordGrant'))
-            ->setClass('Drahak\OAuth2\Grant\Password');
+            ->setType(\Drahak\OAuth2\Grant\Password::class);
         $container->addDefinition($this->prefix('implicitGrant'))
-            ->setClass('Drahak\OAuth2\Grant\Implicit');
+            ->setType(\Drahak\OAuth2\Grant\Implicit::class);
         $container->addDefinition($this->prefix('clientCredentialsGrant'))
-            ->setClass('Drahak\OAuth2\Grant\ClientCredentials');
+            ->setType(\Drahak\OAuth2\Grant\ClientCredentials::class);
 
         $container->addDefinition($this->prefix('grantContext'))
-            ->setClass('Drahak\OAuth2\Grant\GrantContext')
-            ->addSetup('$service->addGrantType(?)', array($this->prefix('@authorizationCodeGrant')))
-            ->addSetup('$service->addGrantType(?)', array($this->prefix('@refreshTokenGrant')))
-            ->addSetup('$service->addGrantType(?)', array($this->prefix('@passwordGrant')))
-            ->addSetup('$service->addGrantType(?)', array($this->prefix('@implicitGrant')))
-            ->addSetup('$service->addGrantType(?)', array($this->prefix('@clientCredentialsGrant')));
+            ->setType(\Drahak\OAuth2\Grant\GrantContext::class)
+            ->addSetup('$service->addGrantType(?)', [$this->prefix('@authorizationCodeGrant')])
+            ->addSetup('$service->addGrantType(?)', [$this->prefix('@refreshTokenGrant')])
+            ->addSetup('$service->addGrantType(?)', [$this->prefix('@passwordGrant')])
+            ->addSetup('$service->addGrantType(?)', [$this->prefix('@implicitGrant')])
+            ->addSetup('$service->addGrantType(?)', [$this->prefix('@clientCredentialsGrant')]);
 
         // Tokens
         $container->addDefinition($this->prefix('accessToken'))
-            ->setClass('Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacade')
-            ->setArguments(array($config['accessTokenLifetime']));
+            ->setType(\Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacade::class)
+            ->setArguments([$config['accessTokenLifetime']]);
         $container->addDefinition($this->prefix('refreshToken'))
-            ->setClass('Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacade')
-            ->setArguments(array($config['refreshTokenLifetime']));
+            ->setType(\Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacade::class)
+            ->setArguments([$config['refreshTokenLifetime']]);
         $container->addDefinition($this->prefix('authorizationCode'))
-            ->setClass('Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade')
-            ->setArguments(array($config['authorizationCodeLifetime']));
+            ->setType(\Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade::class)
+            ->setArguments([$config['authorizationCodeLifetime']]);
 
         $container->addDefinition('tokenContext')
-            ->setClass('Drahak\OAuth2\Storage\TokenContext')
-            ->addSetup('$service->addToken(?)', array($this->prefix('@accessToken')))
-            ->addSetup('$service->addToken(?)', array($this->prefix('@refreshToken')))
-            ->addSetup('$service->addToken(?)', array($this->prefix('@authorizationCode')));
+            ->setType(\Drahak\OAuth2\Storage\TokenContext::class)
+            ->addSetup('$service->addToken(?)', [$this->prefix('@accessToken')])
+            ->addSetup('$service->addToken(?)', [$this->prefix('@refreshToken')])
+            ->addSetup('$service->addToken(?)', [$this->prefix('@authorizationCode')]);
 
         // Nette database Storage
-        if ($this->getByType($container, 'Nette\Database\Context')) {
+        if ($this->getByType($container, \Nette\Database\Explorer::class)) {
             $container->addDefinition($this->prefix('accessTokenStorage'))
-                ->setClass($config['accessTokenStorage']);
+                ->setType($config['accessTokenStorage']);
             $container->addDefinition($this->prefix('refreshTokenStorage'))
-                ->setClass($config['refreshTokenStorage']);
+                ->setType($config['refreshTokenStorage']);
             $container->addDefinition($this->prefix('authorizationCodeStorage'))
-                ->setClass($config['authorizationCodeStorage']);
+                ->setType($config['authorizationCodeStorage']);
             $container->addDefinition($this->prefix('clientStorage'))
-                ->setClass($config['clientStorage']);
+                ->setType($config['clientStorage']);
         }
     }
 
     /**
-     * @param ContainerBuilder $container
      * @param string $type
-     * @return ServiceDefinition|null
+     * @return Definition|null
      */
-    private function getByType(ContainerBuilder $container, $type)
+    private function getByType(ContainerBuilder $container, string $type): ?Definition
     {
-        $definitionas = $container->getDefinitions();
-        foreach ($definitionas as $definition) {
+        $definitions = $container->getDefinitions();
+        foreach ($definitions as $definition) {
             if ($definition->class === $type) {
                 return $definition;
             }

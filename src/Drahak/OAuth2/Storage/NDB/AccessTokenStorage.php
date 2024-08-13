@@ -3,13 +3,12 @@
 namespace Drahak\OAuth2\Storage\NDB;
 
 use DateTime;
-use Drahak\OAuth2\InvalidScopeException;
+use Drahak\OAuth2\Exceptions\InvalidScopeException;
 use Drahak\OAuth2\Storage\AccessTokens\AccessToken;
 use Drahak\OAuth2\Storage\AccessTokens\IAccessToken;
 use Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
-use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\SmartObject;
 use PDOException;
@@ -23,36 +22,33 @@ class AccessTokenStorage implements IAccessTokenStorage
 {
     use SmartObject;
 
-    /** @var Context */
-    private $context;
-
-    public function __construct(Context $context)
+    public function __construct(
+        private readonly Explorer $context
+    )
     {
-        $this->context = $context;
     }
 
     /**
      * Store access token
-     * @param IAccessToken $accessToken
      * @throws InvalidScopeException
      */
-    public function store(IAccessToken $accessToken)
+    public function store(IAccessToken $accessToken): void
     {
-        $connection = $this->getTable()->getConnection();
+        $connection = $this->context->getConnection();
         $connection->beginTransaction();
-        $this->getTable()->insert(array(
+        $this->getTable()->insert([
             'access_token' => $accessToken->getAccessToken(),
             'client_id' => $accessToken->getClientId(),
             'user_id' => $accessToken->getUserId(),
-            'expires' => $accessToken->getExpires()
-        ));
+            'expires' => $accessToken->getExpires(),
+        ]);
 
         try {
             foreach ($accessToken->getScope() as $scope) {
-                $this->getScopeTable()->insert(array(
+                $this->getScopeTable()->insert([
                     'access_token' => $accessToken->getAccessToken(),
-                    'scope_name' => $scope
-                ));
+                    'scope_name' => $scope,
+                ]);
             }
         } catch (PDOException $e) {
             // MySQL error 1452 - Cannot add or update a child row: a foreign key constraint fails
@@ -66,20 +62,17 @@ class AccessTokenStorage implements IAccessTokenStorage
 
     /**
      * Get authorization code table
-     * @return Selection
      */
-    protected function getTable()
+    protected function getTable(): Selection
     {
         return $this->context->table('oauth_access_token');
     }
 
     /******************** IAccessTokenStorage ********************/
-
     /**
      * Get scope table
-     * @return Selection
      */
-    protected function getScopeTable()
+    protected function getScopeTable(): Selection
     {
         return $this->context->table('oauth_access_token_scope');
     }
@@ -88,28 +81,30 @@ class AccessTokenStorage implements IAccessTokenStorage
      * Remove access token
      * @param string $accessToken
      */
-    public function remove($accessToken)
+    public function remove(string $accessToken): void
     {
-        $this->getTable()->where(array('access_token' => $accessToken))->delete();
+        $this->getTable()->where(['access_token' => $accessToken])->delete();
     }
 
     /**
      * Get valid access token
      * @param string $accessToken
-     * @return IAccessToken|NULL
+     * @return IAccessToken|null
+     * @throws \Exception
      */
-    public function getValidAccessToken($accessToken)
+    public function getValidAccessToken(string $accessToken): ?IAccessToken
     {
-        /** @var ActiveRow $row */
         $row = $this->getTable()
-            ->where(array('access_token' => $accessToken))
+            ->where(['access_token' => $accessToken])
             ->where(new SqlLiteral('TIMEDIFF(expires, NOW()) >= 0'))
             ->fetch();
 
-        if (!$row) return NULL;
+        if (!$row) {
+            return NULL;
+        }
 
         $scopes = $this->getScopeTable()
-            ->where(array('access_token' => $accessToken))
+            ->where(['access_token' => $accessToken])
             ->fetchPairs('scope_name');
 
         return new AccessToken(
@@ -120,6 +115,4 @@ class AccessTokenStorage implements IAccessTokenStorage
             array_keys($scopes)
         );
     }
-
-
 }

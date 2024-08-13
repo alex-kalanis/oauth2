@@ -3,7 +3,7 @@
 namespace Drahak\OAuth2\Grant;
 
 use Drahak\OAuth2\Storage\ITokenFacade;
-use Drahak\OAuth2\UnauthorizedClientException;
+use Drahak\OAuth2\Exceptions\UnauthorizedClientException;
 
 /**
  * ClientCredentials
@@ -14,9 +14,8 @@ class ClientCredentials extends GrantType
 {
     /**
      * Get identifier string to this grant type
-     * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return self::CLIENT_CREDENTIALS;
     }
@@ -25,7 +24,7 @@ class ClientCredentials extends GrantType
      * Verify request
      * @throws UnauthorizedClientException
      */
-    protected function verifyRequest()
+    protected function verifyRequest(): void
     {
         if (!$this->input->getParameter(self::CLIENT_SECRET_KEY)) {
             throw new UnauthorizedClientException;
@@ -34,9 +33,9 @@ class ClientCredentials extends GrantType
 
     /**
      * Generate access token
-     * @return string
+     * @return array<string, string|int>
      */
-    protected function generateAccessToken()
+    protected function generateAccessToken(): array
     {
         $client = $this->getClient();
         $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
@@ -45,12 +44,11 @@ class ClientCredentials extends GrantType
         $accessToken = $accessTokenStorage->create($client, NULL, $this->getScope());
         $refreshToken = $refreshTokenStorage->create($client, NULL, $this->getScope());
 
-        return array(
+        return [
             'access_token' => $accessToken->getAccessToken(),
             'token_type' => 'bearer',
             'expires_in' => $accessTokenStorage->getLifetime(),
-            'refresh_token' => $refreshToken->getRefreshToken()
-        );
+            'refresh_token' => $refreshToken->getRefreshToken(),
+        ];
     }
-
 }

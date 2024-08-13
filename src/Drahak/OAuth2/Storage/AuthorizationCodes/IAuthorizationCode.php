@@ -2,44 +2,19 @@
 
 namespace Drahak\OAuth2\Storage\AuthorizationCodes;
 
-use DateTime;
+use Drahak\OAuth2\Storage\ITokens;
 
 /**
  * IAuthorizationCode
  * @package Drahak\OAuth2\Storage\AuthorizationCodes
  * @author Drahomír Hanák
  */
-interface IAuthorizationCode
+interface IAuthorizationCode extends ITokens
 {
 
     /**
      * Get authorization code
      * @return string
      */
-    public function getAuthorizationCode();
-
-    /**
-     * Set expire date
-     * @return DateTime
-     */
-    public function getExpires();
-
-    /**
-     * Get client ID
-     * @return string|int
-     */
-    public function getClientId();
-
-    /**
-     * Get user ID
-     * @return string|int
-     */
-    public function getUserId();
-
-    /**
-     * Get scope
-     * @return array
-     */
-    public function getScope();
-
+    public function getAuthorizationCode(): string;
 }
