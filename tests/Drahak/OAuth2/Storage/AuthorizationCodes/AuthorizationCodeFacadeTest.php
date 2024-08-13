@@ -5,24 +5,15 @@ namespace Tests\Drahak\OAuth2\Storage\AuthorizationCodes;
 require_once __DIR__ . '/../../../bootstrap.php';
 
 use Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeFacade;
-use Mockista\MockInterface;
+use Mockery;
 use Tester\Assert;
 use Tests\TestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCode.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\AuthorizationCodes\AuthorizationCodeStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\AuthorizationCodes
- */
 class AuthorizationCodeFacadeTest extends TestCase
 {
 
-    /** @var MockInterface */
     private $storage;
 
-    /** @var MockInterface */
     private $keyGenerator;
 
     /** @var AuthorizationCodeFacade */
@@ -52,7 +43,7 @@ class AuthorizationCodeFacadeTest extends TestCase
     {
         $key = '117936fc44529a174e85ca68005b';
 
-        $client = $this->mockista->create('Drahak\OAuth2\Storage\Clients\IClient');
+        $client = Mockery::mock(\Drahak\OAuth2\Storage\Clients\IClient::class);
         $client->expects('getId')->once()->andReturn(1);
 
         $this->keyGenerator->expects('generate')->once()->andReturn($key);
@@ -70,8 +61,8 @@ class AuthorizationCodeFacadeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->storage = $this->mockista->create('Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage');
-        $this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
+        $this->storage = Mockery::mock(\Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage::class);
+        $this->keyGenerator = Mockery::mock(\Drahak\OAuth2\IKeyGenerator::class);
         $this->token = new AuthorizationCodeFacade(3600, $this->keyGenerator, $this->storage);
     }
 

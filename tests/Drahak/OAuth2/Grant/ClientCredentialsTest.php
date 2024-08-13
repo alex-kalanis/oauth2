@@ -10,13 +10,6 @@ use Drahak\OAuth2\Grant\GrantType;
 use Drahak\OAuth2\Storage\ITokenFacade;
 use Tester\Assert;
 
-/**
- * Test: Tests\Drahak\OAuth2\Grant\ClientCredentials.
- *
- * @testCase Tests\Drahak\OAuth2\Grant\ClientCredentialsTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Grant
- */
 class ClientCredentialsTest extends GrantTestCase
 {
 

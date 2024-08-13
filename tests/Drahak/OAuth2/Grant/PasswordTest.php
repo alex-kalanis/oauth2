@@ -9,13 +9,6 @@ use Drahak\OAuth2\Grant\Password;
 use Drahak\OAuth2\Storage\ITokenFacade;
 use Tester\Assert;
 
-/**
- * Test: Tests\Drahak\OAuth2\Grant\Password.
- *
- * @testCase Tests\Drahak\OAuth2\Grant\PasswordTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Grant
- */
 class PasswordTest extends GrantTestCase
 {
 

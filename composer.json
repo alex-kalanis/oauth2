@@ -19,9 +19,9 @@
 	},
 	"require-dev": {
 		"nette/tester": "^2.5",
-		"janmarek/mockista": "1.1.0",
 		"rector/rector": "^1.2",
-		"shipmonk/composer-dependency-analyser": "^1.7"
+		"shipmonk/composer-dependency-analyser": "^1.7",
+		"mockery/mockery": "^1.6"
 	},
 	"autoload": {
 		"psr-4": {

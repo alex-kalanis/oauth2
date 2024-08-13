@@ -5,24 +5,15 @@ namespace Tests\Drahak\OAuth2\Storage\AccessTokens;
 require_once __DIR__ . '/../../../bootstrap.php';
 
 use Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacade;
-use Mockista\MockInterface;
+use Mockery;
 use Tester\Assert;
 use Tests\TestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\AccessTokens\AccessToken.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\AccessTokens\AccessTokenFacadeTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\AccessTokens
- */
 class AccessTokenFacadeTest extends TestCase
 {
 
-    /** @var MockInterface */
     private $storage;
 
-    /** @var MockInterface */
     private $keyGenerator;
 
     /** @var AccessTokenFacade */
@@ -53,7 +44,7 @@ class AccessTokenFacadeTest extends TestCase
         $key = '117936fc44529a174e85ca68005b';
         $scope = array('profile', 'oauth_spec');
 
-        $client = $this->mockista->create('Drahak\OAuth2\Storage\Clients\IClient');
+        $client = Mockery::mock(\Drahak\OAuth2\Storage\Clients\IClient::class);
         $client->expects('getId')->once()->andReturn(1);
 
         $this->keyGenerator->expects('generate')->once()->andReturn($key);
@@ -71,11 +62,10 @@ class AccessTokenFacadeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->storage = $this->mockista->create('Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage');
-        $this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
+        $this->storage = Mockery::mock(\Drahak\OAuth2\Storage\AccessTokens\IAccessTokenStorage::class);
+        $this->keyGenerator = Mockery::mock(\Drahak\OAuth2\IKeyGenerator::class);
         $this->token = new AccessTokenFacade(3600, $this->keyGenerator, $this->storage);
     }
-
 }
 
 (new AccessTokenFacadeTest())->run();

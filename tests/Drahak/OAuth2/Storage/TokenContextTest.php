@@ -5,22 +5,14 @@ namespace Tests\Drahak\OAuth2\Storage;
 require_once __DIR__ . '/../../bootstrap.php';
 
 use Drahak\OAuth2\Storage\TokenContext;
-use Mockista\MockInterface;
+use Mockery;
 use Tester\Assert;
 use Tests\TestCase;
 
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\TokenContext.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\TokenContextTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage
- */
 class TokenContextTest extends TestCase
 {
 
-    /** @var MockInterface */
     private $token;
 
     /** @var TokenContext */
@@ -30,7 +22,7 @@ class TokenContextTest extends TestCase
     {
         Assert::throws(function () {
             $this->context->getToken('totally doesn\'t exist');
-        }, 'Drahak\OAuth2\InvalidStateException');
+        }, \Drahak\OAuth2\Exceptions\InvalidStateException::class);
     }
 
     public function testAddToken(): void
@@ -44,7 +36,7 @@ class TokenContextTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->token = $this->mockista->create('Drahak\OAuth2\Storage\ITokenFacade');
+        $this->token = Mockery::mock(\Drahak\OAuth2\Storage\ITokenFacade::class);
         $this->context = new TokenContext;
     }
 

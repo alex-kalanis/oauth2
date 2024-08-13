@@ -14,8 +14,8 @@ class Input implements IInput
 {
     use SmartObject;
 
-    /** @var array */
-    private array $data;
+    /** @var array|null */
+    private ?array $data = null;
 
     public function __construct(
         private readonly IRequest $request
@@ -40,7 +40,7 @@ class Input implements IInput
      */
     public function getParameters(): array
     {
-        if (!$this->data) {
+        if (is_null($this->data)) {
             if ($this->request->getQuery()) {
                 $this->data = $this->request->getQuery();
             } else if ($this->request->getPost()) {

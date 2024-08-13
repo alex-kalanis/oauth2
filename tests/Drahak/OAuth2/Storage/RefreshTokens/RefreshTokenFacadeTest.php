@@ -5,25 +5,16 @@ namespace Tests\Drahak\OAuth2\Storage\RefreshTokens;
 require_once __DIR__ . '/../../../bootstrap.php';
 
 use Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacade;
-use Mockista\MockInterface;
+use Mockery;
 use Tester\Assert;
 use Tests\TestCase;
 
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\RefreshTokens\RefreshToken.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\RefreshTokens\RefreshTokenFacadeTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\RefreshTokens
- */
 class RefreshTokenFacadeTest extends TestCase
 {
 
-    /** @var MockInterface */
     private $storage;
 
-    /** @var MockInterface */
     private $keyGenerator;
 
     /** @var RefreshTokenFacade */
@@ -37,7 +28,7 @@ class RefreshTokenFacadeTest extends TestCase
 
         Assert::throws(function () use ($token) {
             $this->token->getEntity($token);
-        }, 'Drahak\OAuth2\Storage\InvalidRefreshTokenException');
+        }, \Drahak\OAuth2\Storage\Exceptions\InvalidRefreshTokenException::class);
     }
 
     public function testValidToken(): void
@@ -53,7 +44,7 @@ class RefreshTokenFacadeTest extends TestCase
     {
         $key = '117936fc44529a174e85ca68005b';
 
-        $client = $this->mockista->create('Drahak\OAuth2\Storage\Clients\IClient');
+        $client = Mockery::mock(\Drahak\OAuth2\Storage\Clients\IClient::class);
         $client->expects('getId')->once()->andReturn(1);
 
         $this->keyGenerator->expects('generate')->once()->andReturn($key);
@@ -70,8 +61,8 @@ class RefreshTokenFacadeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->storage = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage');
-        $this->keyGenerator = $this->mockista->create('Drahak\OAuth2\IKeyGenerator');
+        $this->storage = Mockery::mock(\Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage::class);
+        $this->keyGenerator = Mockery::mock(\Drahak\OAuth2\IKeyGenerator::class);
         $this->token = new RefreshTokenFacade(3600, $this->keyGenerator, $this->storage);
     }
 

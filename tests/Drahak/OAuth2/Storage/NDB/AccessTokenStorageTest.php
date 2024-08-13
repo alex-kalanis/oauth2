@@ -13,13 +13,6 @@ use Nette;
 use Tester\Assert;
 use Tests\DatabaseTestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\NDB\AccessTokenStorage.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\NDB\AccessTokenStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\NDB
- */
 class AccessTokenStorageTest extends DatabaseTestCase
 {
 
@@ -67,7 +60,7 @@ class AccessTokenStorageTest extends DatabaseTestCase
 
         Assert::throws(function () use ($entity) {
             $this->storage->store($entity);
-        }, 'Drahak\OAuth2\InvalidScopeException');
+        }, \Drahak\OAuth2\Exceptions\InvalidScopeException::class);
     }
 
     public function testGetValidAccessTokenEntityWithScope(): void

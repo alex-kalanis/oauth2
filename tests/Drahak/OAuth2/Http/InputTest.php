@@ -5,21 +5,13 @@ namespace Tests\Drahak\OAuth2\Http;
 require_once __DIR__ . '/../../bootstrap.php';
 
 use Drahak\OAuth2\Http\Input;
-use Mockista\MockInterface;
+use Mockery;
 use Tester\Assert;
 use Tests\TestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Http\Input.
- *
- * @testCase Tests\Drahak\OAuth2\Http\InputTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Http
- */
 class InputTest extends TestCase
 {
 
-    /** @var MockInterface */
     private $request;
 
     /** @var Input */
@@ -58,10 +50,9 @@ class InputTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->request = $this->mockista->create('Nette\Http\IRequest');
+        $this->request = Mockery::mock(\Nette\Http\IRequest::class);
         $this->input = new Input($this->request);
     }
-
 }
 
 (new InputTest())->run();

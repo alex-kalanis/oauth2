@@ -11,13 +11,6 @@ use Drahak\OAuth2\Storage\NDB\ClientStorage;
 use Tester\Assert;
 use Tests\DatabaseTestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\NDB\ClientStorage.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\NDB\ClientStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\NDB
- */
 class ClientStorageTest extends DatabaseTestCase
 {
     /** @var ClientStorage */

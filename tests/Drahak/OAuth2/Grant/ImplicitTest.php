@@ -9,13 +9,6 @@ use Drahak\OAuth2\Grant\Implicit;
 use Drahak\OAuth2\Storage\ITokenFacade;
 use Tester\Assert;
 
-/**
- * Test: Tests\Drahak\OAuth2\Grant\Implicit.
- *
- * @testCase Tests\Drahak\OAuth2\Grant\ImplicitTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Grant
- */
 class ImplicitTest extends GrantTestCase
 {
 

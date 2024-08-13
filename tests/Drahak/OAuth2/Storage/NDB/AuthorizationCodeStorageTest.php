@@ -13,13 +13,6 @@ use Nette;
 use Tester\Assert;
 use Tests\DatabaseTestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\NDB\AuthorizationCode.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\NDB\AuthorizationCodeStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\NDB
- */
 class AuthorizationCodeStorageTest extends DatabaseTestCase
 {
 

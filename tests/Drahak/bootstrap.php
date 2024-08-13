@@ -1,5 +1,5 @@
 <?php
-if (@!include __DIR__ . '/../../libs/autoload.php') {
+if (@!include __DIR__ . '/../../vendor/autoload.php') {
     echo 'Install Nette Tester using `composer update --dev`';
     exit(1);
 }
@@ -7,7 +7,6 @@ require_once __DIR__ . '/TestCase.php';
 
 
 // configure environment
-//Tester\Helpers::setup();
 class_alias(\Tester\Assert::class, 'Assert');
 date_default_timezone_set('Europe/Prague');
 
@@ -19,17 +18,7 @@ $_SERVER = array_intersect_key($_SERVER, array_flip(['PHP_SELF', 'SCRIPT_NAME', 
 $_SERVER['REQUEST_TIME'] = 1234567890;
 $_ENV = $_GET = $_POST = [];
 
-if (extension_loaded('xdebug')) {
-    xdebug_disable();
-    Tester\CodeCoverage\Collector::start(__DIR__ . '/coverage.dat', 'Xdebug');
-}
-
-function id($val)
-{
-    return $val;
-}
-
-function run(Tests\TestCase $testCase): void
-{
-    $testCase->run($_SERVER['argv'][1] ?? NULL);
-}
+//if (extension_loaded('xdebug')) {
+//    xdebug_disable();
+//    Tester\CodeCoverage\Collector::start(__DIR__ . '/coverage.dat', 'Xdebug');
+//}

@@ -15,6 +15,7 @@ phpunit-*
 .phpunit.cache*
 
 # external libs
+temp/
 tests/temp/
 tests/external/
 tests/data/clover.xml

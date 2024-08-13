@@ -7,15 +7,9 @@ require_once __DIR__ . '/GrantTestCase.php';
 
 use Drahak\OAuth2\Grant\RefreshToken;
 use Drahak\OAuth2\Storage\ITokenFacade;
+use Mockery;
 use Tester\Assert;
 
-/**
- * Test: Tests\Drahak\OAuth2\Grant\RefreshToken.
- *
- * @testCase Tests\Drahak\OAuth2\Grant\RefreshTokenFacadeTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Grant
- */
 class RefreshTokenTest extends GrantTestCase
 {
 
@@ -28,7 +22,7 @@ class RefreshTokenTest extends GrantTestCase
         $this->createInputMock($data);
         $this->createTokenMocks(array(ITokenFacade::REFRESH_TOKEN => $this->refreshToken));
 
-        $storage = $this->mockista->create('Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage');
+        $storage = Mockery::mock(\Drahak\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage::class);
         $storage->expects('remove')->once()->with($data['refresh_token']);
         $this->refreshToken->expects('getEntity')->once()->with($data['refresh_token']);
         $this->refreshToken->expects('getStorage')->once()->andReturn($storage);

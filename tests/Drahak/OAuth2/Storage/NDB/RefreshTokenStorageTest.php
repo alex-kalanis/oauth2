@@ -13,13 +13,6 @@ use Nette;
 use Tester\Assert;
 use Tests\DatabaseTestCase;
 
-/**
- * Test: Tests\Drahak\OAuth2\Storage\NDB\RefreshTokenStorage.
- *
- * @testCase Tests\Drahak\OAuth2\Storage\NDB\RefreshTokenStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Storage\NDB
- */
 class RefreshTokenStorageTest extends DatabaseTestCase
 {
 

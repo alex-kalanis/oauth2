@@ -40,7 +40,7 @@ abstract class DatabaseTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \Tester\Helpers::lock('db', dirname(TEMP_DIR));
+//        \Tester\Helpers::lock('db', dirname(TEMP_DIR));
 
         $this->connection = $this->getConnection();
         $this->selectionFactory = $this->getSelectionFactory();

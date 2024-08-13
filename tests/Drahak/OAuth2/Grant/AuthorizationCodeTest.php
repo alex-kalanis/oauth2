@@ -7,15 +7,9 @@ require_once __DIR__ . '/GrantTestCase.php';
 
 use Drahak\OAuth2\Grant\AuthorizationCode;
 use Drahak\OAuth2\Storage\ITokenFacade;
+use Mockery;
 use Tester\Assert;
 
-/**
- * Test: Tests\Drahak\OAuth2\Grant\AuthorizationCode.
- *
- * @testCase Tests\Drahak\OAuth2\Grant\AuthorizationCodeStorageTest
- * @author Drahomír Hanák
- * @package Tests\Drahak\OAuth2\Grant
- */
 class AuthorizationCodeTest extends GrantTestCase
 {
 
@@ -26,8 +20,8 @@ class AuthorizationCodeTest extends GrantTestCase
     {
         $data = array('code' => '98b2950c11d8f3aa5773993ce0db712809524eeb4e625db00f39fb1530eee4ec');
 
-        $storage = $this->mockista->create('Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCodeStorage');
-        $entity = $this->mockista->create('Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCode');
+        $entity = Mockery::mock(\Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCode::class);
+        $storage = Mockery::mock(\Drahak\OAuth2\Storage\AuthorizationCodes\IAuthorizationCode::class);
 
         $storage->expects('remove')
             ->once()
