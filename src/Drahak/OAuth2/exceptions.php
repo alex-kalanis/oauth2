@@ -1,5 +1,8 @@
 <?php
+
 namespace Drahak\OAuth2;
+
+use Exception;
 
 /**
  * LogicException
@@ -70,20 +73,20 @@ class NotLoggedInException extends LogicException
  * @package Drahak\OAuth2\Application
  * @author Drahomír Hanák
  */
-class OAuthException extends \Exception
+class OAuthException extends Exception
 {
 
-	/** @var string */
-	protected $key;
+    /** @var string */
+    protected $key;
 
-	/**
-	 * Get OAuth2 exception key as defined in specification
-	 * @return string
-	 */
-	public function getKey()
-	{
-		return $this->key;
-	}
+    /**
+     * Get OAuth2 exception key as defined in specification
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
 
 }
 
@@ -95,13 +98,13 @@ class OAuthException extends \Exception
 class InvalidRequestException extends OAuthException
 {
 
-	/** @var string */
-	protected $key = 'invalid_request';
+    /** @var string */
+    protected $key = 'invalid_request';
 
-	public function __construct($message = 'Invalid request parameters', \Exception $previous = NULL)
-	{
-		parent::__construct($message, 400, $previous);
-	}
+    public function __construct($message = 'Invalid request parameters', Exception $previous = NULL)
+    {
+        parent::__construct($message, 400, $previous);
+    }
 
 }
 
@@ -113,13 +116,13 @@ class InvalidRequestException extends OAuthException
 class UnsupportedResponseTypeException extends OAuthException
 {
 
-	/** @var string */
-	protected $key = 'unsupported_response_type';
+    /** @var string */
+    protected $key = 'unsupported_response_type';
 
-	public function __construct($message = 'Grant type not supported', \Exception $previous = NULL)
-	{
-		parent::__construct($message, 400, $previous);
-	}
+    public function __construct($message = 'Grant type not supported', Exception $previous = NULL)
+    {
+        parent::__construct($message, 400, $previous);
+    }
 
 }
 
@@ -131,13 +134,13 @@ class UnsupportedResponseTypeException extends OAuthException
 class UnauthorizedClientException extends OAuthException
 {
 
-	/** @var string */
-	protected $key = 'unauthorized_client';
+    /** @var string */
+    protected $key = 'unauthorized_client';
 
-	public function __construct($message = 'The grant type is not authorized for this client', \Exception $previous = NULL)
-	{
-		parent::__construct($message, 401, $previous);
-	}
+    public function __construct($message = 'The grant type is not authorized for this client', Exception $previous = NULL)
+    {
+        parent::__construct($message, 401, $previous);
+    }
 
 }
 
@@ -150,13 +153,13 @@ class UnauthorizedClientException extends OAuthException
 class InvalidScopeException extends OAuthException
 {
 
-	/** @var string */
-	protected $key = 'invalid_scope';
+    /** @var string */
+    protected $key = 'invalid_scope';
 
-	public function __construct($message = 'Given scope does not exist', \Exception $previous = NULL)
-	{
-		parent::__construct($message, 400, $previous);
-	}
+    public function __construct($message = 'Given scope does not exist', Exception $previous = NULL)
+    {
+        parent::__construct($message, 400, $previous);
+    }
 
 }
 
@@ -169,12 +172,12 @@ class InvalidScopeException extends OAuthException
 class InvalidGrantException extends OAuthException
 {
 
-	/** @var string */
-	protected $key = 'invalid_grant';
+    /** @var string */
+    protected $key = 'invalid_grant';
 
-	public function __construct($message = 'Givent grant token is invalid or expired', \Exception $previous = NULL)
-	{
-		parent::__construct($message, 400, $previous);
-	}
+    public function __construct($message = 'Givent grant token is invalid or expired', Exception $previous = NULL)
+    {
+        parent::__construct($message, 400, $previous);
+    }
 
 }

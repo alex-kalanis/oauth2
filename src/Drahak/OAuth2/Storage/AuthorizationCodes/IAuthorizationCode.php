@@ -1,5 +1,8 @@
 <?php
+
 namespace Drahak\OAuth2\Storage\AuthorizationCodes;
+
+use DateTime;
 
 /**
  * IAuthorizationCode
@@ -9,34 +12,34 @@ namespace Drahak\OAuth2\Storage\AuthorizationCodes;
 interface IAuthorizationCode
 {
 
-	/**
-	 * Get authorization code
-	 * @return string
-	 */
-	public function getAuthorizationCode();
+    /**
+     * Get authorization code
+     * @return string
+     */
+    public function getAuthorizationCode();
 
-	/**
-	 * Set expire date
-	 * @return \DateTime
-	 */
-	public function getExpires();
+    /**
+     * Set expire date
+     * @return DateTime
+     */
+    public function getExpires();
 
-	/**
-	 * Get client ID
-	 * @return string|int
-	 */
-	public function getClientId();
+    /**
+     * Get client ID
+     * @return string|int
+     */
+    public function getClientId();
 
-	/**
-	 * Get user ID
-	 * @return string|int
-	 */
-	public function getUserId();
+    /**
+     * Get user ID
+     * @return string|int
+     */
+    public function getUserId();
 
-	/**
-	 * Get scope
-	 * @return array
-	 */
-	public function getScope();
+    /**
+     * Get scope
+     * @return array
+     */
+    public function getScope();
 
 }

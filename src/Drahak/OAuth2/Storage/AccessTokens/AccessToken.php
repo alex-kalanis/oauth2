@@ -1,8 +1,9 @@
 <?php
+
 namespace Drahak\OAuth2\Storage\AccessTokens;
 
 use DateTime;
-use Nette\Object;
+use Nette\SmartObject;
 
 /**
  * Base AccessToken entity
@@ -14,71 +15,72 @@ use Nette\Object;
  * @property-read string|int $clientId
  * @property-read array $scope
  */
-class AccessToken extends Object implements IAccessToken
+class AccessToken implements IAccessToken
 {
+    use SmartObject;
 
-	/** @var string */
-	private $accessToken;
+    /** @var string */
+    private $accessToken;
 
-	/** @var DateTime */
-	private $expires;
+    /** @var DateTime */
+    private $expires;
 
-	/** @var string|int */
-	private $clientId;
+    /** @var string|int */
+    private $clientId;
 
-	/** @var string|int */
-	private $userId;
+    /** @var string|int */
+    private $userId;
 
-	/** @var array */
-	private $scope;
+    /** @var array */
+    private $scope;
 
-	public function __construct($accessToken, DateTime $expires, $clientId, $userId, array $scope)
-	{
-		$this->accessToken = $accessToken;
-		$this->expires = $expires;
-		$this->clientId = $clientId;
-		$this->userId = $userId;
-		$this->scope = $scope;
-	}
+    public function __construct($accessToken, DateTime $expires, $clientId, $userId, array $scope)
+    {
+        $this->accessToken = $accessToken;
+        $this->expires = $expires;
+        $this->clientId = $clientId;
+        $this->userId = $userId;
+        $this->scope = $scope;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getAccessToken()
-	{
-		return $this->accessToken;
-	}
+    /**
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
 
-	/**
-	 * @return int|string
-	 */
-	public function getClientId()
-	{
-		return $this->clientId;
-	}
+    /**
+     * @return int|string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
 
-	/**
-	 * @return int|string
-	 */
-	public function getUserId()
-	{
-		return $this->userId;
-	}
+    /**
+     * @return int|string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getExpires()
-	{
-		return $this->expires;
-	}
+    /**
+     * @return DateTime
+     */
+    public function getExpires()
+    {
+        return $this->expires;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getScope()
-	{
-		return $this->scope;
-	}
+    /**
+     * @return array
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
 
 }

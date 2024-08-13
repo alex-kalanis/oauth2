@@ -11,21 +11,19 @@
 			"homepage": "http://www.drahak.eu"
 		}
 	],
-	"config": {
-		"vendor-dir": "libs"
-	},
 	"require": {
-		"php": ">= 5.3.0",
-
-		"nette/nette": "@dev"
+		"php": ">= 8.0.0",
+		"nette/nette": "^3.2"
 	},
 	"require-dev": {
-		"nette/tester": "dev-master",
-		"janmarek/mockista": "dev-master"
+		"nette/tester": "^2.5",
+		"janmarek/mockista": "1.1.0",
+		"rector/rector": "^1.2",
+		"shipmonk/composer-dependency-analyser": "^1.7"
 	},
 	"autoload": {
-		"psr-0": {
-			"Drahak\\OAuth2": "src/"
+		"psr-4": {
+			"Drahak\\OAuth2": "src/Drahak/OAuth2"
 		},
 		"classmap": [
 			"src/Drahak/OAuth2/exceptions.php",

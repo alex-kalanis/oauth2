@@ -1,5 +1,8 @@
 <?php
+
 namespace Drahak\OAuth2\Storage\RefreshTokens;
+
+use DateTime;
 
 /**
  * IRefreshToken entity
@@ -9,28 +12,28 @@ namespace Drahak\OAuth2\Storage\RefreshTokens;
 interface IRefreshToken
 {
 
-	/**
-	 * Get refresh token
-	 * @return string
-	 */
-	public function getRefreshToken();
+    /**
+     * Get refresh token
+     * @return string
+     */
+    public function getRefreshToken();
 
-	/**
-	 * Get expire time
-	 * @return \DateTime
-	 */
-	public function getExpires();
+    /**
+     * Get expire time
+     * @return DateTime
+     */
+    public function getExpires();
 
-	/**
-	 * Get client id
-	 * @return string|int
-	 */
-	public function getClientId();
+    /**
+     * Get client id
+     * @return string|int
+     */
+    public function getClientId();
 
-	/**
-	 * Get refresh token user ID
-	 * @return string|int
-	 */
-	public function getUserId();
+    /**
+     * Get refresh token user ID
+     * @return string|int
+     */
+    public function getUserId();
 
 }

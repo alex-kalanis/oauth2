@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Grant;
 
 use Drahak\OAuth2\Storage\ITokenFacade;
@@ -11,45 +12,45 @@ use Drahak\OAuth2\UnauthorizedClientException;
  */
 class ClientCredentials extends GrantType
 {
-	/**
-	 * Verify request
-	 * @throws UnauthorizedClientException
-	 */
-	protected function verifyRequest()
-	{
-		if (!$this->input->getParameter(self::CLIENT_SECRET_KEY)) {
-			throw new UnauthorizedClientException;
-		}
-	}
+    /**
+     * Get identifier string to this grant type
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return self::CLIENT_CREDENTIALS;
+    }
 
-	/**
-	 * Generate access token
-	 * @return string
-	 */
-	protected function generateAccessToken()
-	{
-		$client = $this->getClient();
-		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
+    /**
+     * Verify request
+     * @throws UnauthorizedClientException
+     */
+    protected function verifyRequest()
+    {
+        if (!$this->input->getParameter(self::CLIENT_SECRET_KEY)) {
+            throw new UnauthorizedClientException;
+        }
+    }
 
-		$accessToken = $accessTokenStorage->create($client, NULL, $this->getScope());
-		$refreshToken = $refreshTokenStorage->create($client, NULL, $this->getScope());
+    /**
+     * Generate access token
+     * @return string
+     */
+    protected function generateAccessToken()
+    {
+        $client = $this->getClient();
+        $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+        $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
-		return array(
-			'access_token' => $accessToken->getAccessToken(),
-			'token_type' => 'bearer',
-			'expires_in' => $accessTokenStorage->getLifetime(),
-			'refresh_token' => $refreshToken->getRefreshToken()
-		);
-	}
+        $accessToken = $accessTokenStorage->create($client, NULL, $this->getScope());
+        $refreshToken = $refreshTokenStorage->create($client, NULL, $this->getScope());
 
-	/**
-	 * Get identifier string to this grant type
-	 * @return string
-	 */
-	public function getIdentifier()
-	{
-		return self::CLIENT_CREDENTIALS;
-	}
+        return array(
+            'access_token' => $accessToken->getAccessToken(),
+            'token_type' => 'bearer',
+            'expires_in' => $accessTokenStorage->getLifetime(),
+            'refresh_token' => $refreshToken->getRefreshToken()
+        );
+    }
 
 }

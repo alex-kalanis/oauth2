@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Http;
 
 /**
@@ -9,23 +10,23 @@ namespace Drahak\OAuth2\Http;
 interface IInput
 {
 
-	/**
-	 * Get all parameters
-	 * @return array
-	 */
-	public function getParameters();
+    /**
+     * Get all parameters
+     * @return array
+     */
+    public function getParameters();
 
-	/**
-	 * Get single parameter value by name
-	 * @param string $name
-	 * @return string|int
-	 */
-	public function getParameter($name);
+    /**
+     * Get single parameter value by name
+     * @param string $name
+     * @return string|int
+     */
+    public function getParameter($name);
 
-	/**
-	 * Get authorization token
-	 * @return string
-	 */
-	public function getAuthorization();
+    /**
+     * Get authorization token
+     * @return string
+     */
+    public function getAuthorization();
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Grant;
 
 use Drahak\OAuth2\Storage\ITokenFacade;
@@ -11,44 +12,44 @@ use Drahak\OAuth2\Storage\ITokenFacade;
 class Implicit extends GrantType
 {
 
-	/**
-	 * Get identifier string to this grant type
-	 * @return string
-	 */
-	public function getIdentifier()
-	{
-		return self::IMPLICIT;
-	}
+    /**
+     * Get identifier string to this grant type
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return self::IMPLICIT;
+    }
 
-	/**
-	 * Verify grant type
-	 */
-	protected function verifyGrantType()
-	{
-	}
+    /**
+     * Verify grant type
+     */
+    protected function verifyGrantType()
+    {
+    }
 
-	/**
-	 * Verify request
-	 * @return void
-	 */
-	protected function verifyRequest()
-	{
-	}
+    /**
+     * Verify request
+     * @return void
+     */
+    protected function verifyRequest()
+    {
+    }
 
-	/**
-	 * Generate access token
-	 * @return string
-	 */
-	protected function generateAccessToken()
-	{
-		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
-		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
+    /**
+     * Generate access token
+     * @return string
+     */
+    protected function generateAccessToken()
+    {
+        $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+        $accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 
-		return array(
-			'access_token' => $accessToken->getAccessToken(),
-			'expires_in' => $accessTokenStorage->getLifetime(),
-			'token_type' => 'bearer'
-		);
-	}
+        return array(
+            'access_token' => $accessToken->getAccessToken(),
+            'expires_in' => $accessTokenStorage->getLifetime(),
+            'token_type' => 'bearer'
+        );
+    }
 
 }

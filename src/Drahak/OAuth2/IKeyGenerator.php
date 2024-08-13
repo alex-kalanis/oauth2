@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2;
 
 /**
@@ -9,11 +10,11 @@ namespace Drahak\OAuth2;
 interface IKeyGenerator
 {
 
-	/**
-	 * Generate random token
-	 * @param int $length
-	 * @return string
-	 */
-	public function generate($length = 40);
+    /**
+     * Generate random token
+     * @param int $length
+     * @return string
+     */
+    public function generate($length = 40);
 
 }

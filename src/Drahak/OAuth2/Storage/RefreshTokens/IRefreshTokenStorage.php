@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Storage\RefreshTokens;
 
 /**
@@ -9,26 +10,26 @@ namespace Drahak\OAuth2\Storage\RefreshTokens;
 interface IRefreshTokenStorage
 {
 
-	/**
-	 * Store refresh token entity
-	 * @param IRefreshToken $refreshToken
-	 * @return void
-	 */
-	public function store(IRefreshToken $refreshToken);
+    /**
+     * Store refresh token entity
+     * @param IRefreshToken $refreshToken
+     * @return void
+     */
+    public function store(IRefreshToken $refreshToken);
 
-	/**
-	 * Remove refresh token
-	 * @param string $refreshToken
-	 * @return void
-	 */
-	public function remove($refreshToken);
+    /**
+     * Remove refresh token
+     * @param string $refreshToken
+     * @return void
+     */
+    public function remove($refreshToken);
 
-	/**
-	 * Validate refresh token
-	 * @param string $refreshToken
-	 * @return IRefreshToken|NULL
-	 */
-	public function getValidRefreshToken($refreshToken);
+    /**
+     * Validate refresh token
+     * @param string $refreshToken
+     * @return IRefreshToken|NULL
+     */
+    public function getValidRefreshToken($refreshToken);
 
 
 }

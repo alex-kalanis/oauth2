@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Grant;
 
 use Drahak\OAuth2\InvalidRequestException;
@@ -14,54 +15,54 @@ use Nette\Security\AuthenticationException;
 class Password extends GrantType
 {
 
-	/**
-	 * Get identifier string to this grant type
-	 * @return string
-	 */
-	public function getIdentifier()
-	{
-		return self::PASSWORD;
-	}
+    /**
+     * Get identifier string to this grant type
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return self::PASSWORD;
+    }
 
-	/**
-	 * Verify request
-	 *
-	 * @throws InvalidStateException
-	 * @throws AuthenticationException
-	 */
-	protected function verifyRequest()
-	{
-		$password = $this->input->getParameter('password');
-		$username = $this->input->getParameter('username');
-		if (!$password || !$username) {
-			throw new InvalidStateException;
-		}
+    /**
+     * Verify request
+     *
+     * @throws InvalidStateException
+     * @throws AuthenticationException
+     */
+    protected function verifyRequest()
+    {
+        $password = $this->input->getParameter('password');
+        $username = $this->input->getParameter('username');
+        if (!$password || !$username) {
+            throw new InvalidStateException;
+        }
 
-		try {
-			$this->user->login($username, $password);
-		} catch(AuthenticationException $e) {
-			throw new InvalidRequestException('Wrong user credentials', $e);
-		}
-	}
+        try {
+            $this->user->login($username, $password);
+        } catch (AuthenticationException $e) {
+            throw new InvalidRequestException('Wrong user credentials', $e);
+        }
+    }
 
-	/**
-	 * Generate access token
-	 * @return string
-	 */
-	protected function generateAccessToken()
-	{
-		$accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
-		$refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
+    /**
+     * Generate access token
+     * @return string
+     */
+    protected function generateAccessToken()
+    {
+        $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
+        $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
-		$accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
-		$refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
+        $accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
+        $refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId(), $this->getScope());
 
-		return array(
-			'access_token' => $accessToken->getAccessToken(),
-			'expires_in' => $accessTokenStorage->getLifetime(),
-			'token_type' => 'bearer',
-			'refresh_token' => $refreshToken->getRefreshToken()
-		);
-	}
+        return array(
+            'access_token' => $accessToken->getAccessToken(),
+            'expires_in' => $accessTokenStorage->getLifetime(),
+            'token_type' => 'bearer',
+            'refresh_token' => $refreshToken->getRefreshToken()
+        );
+    }
 
 }

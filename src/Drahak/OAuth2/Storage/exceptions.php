@@ -1,4 +1,5 @@
 <?php
+
 namespace Drahak\OAuth2\Storage;
 
 use Drahak\OAuth2\RuntimeException;
