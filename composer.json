@@ -1,5 +1,5 @@
 {
-	"name": "drahak/oauth2",
+	"name": "picabo/oauth2",
 	"type": "library",
 	"description": "Nette OAuth2 Provider bundle",
 	"keywords": ["nette", "OAuth2", "provider", "server", "drahak"],
@@ -19,6 +19,7 @@
 		"php": ">= 8.1.0",
 		"ext-pdo": "*",
 		"ext-openssl": "*",
+		"ext-tokenizer": "*",
 		"nette/nette": "^3.2"
 	},
 	"require-dev": {
@@ -29,7 +30,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Drahak\\OAuth2\\": "src/Drahak/OAuth2/"
+			"Picabo\\OAuth2\\": "src/Picabo/OAuth2/"
 		}
 	}
 }
