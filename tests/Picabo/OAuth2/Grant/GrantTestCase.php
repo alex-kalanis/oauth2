@@ -3,9 +3,12 @@
 namespace Tests\Picabo\OAuth2\Grant;
 
 use Picabo\OAuth2\Http\IInput;
+use Picabo\OAuth2\IKeyGenerator;
 use Picabo\OAuth2\Storage\AccessTokens\AccessToken;
 use Picabo\OAuth2\Storage\AccessTokens\IAccessToken;
+use Picabo\OAuth2\Storage\AccessTokens\IAccessTokenStorage;
 use Picabo\OAuth2\Storage\AuthorizationCodes\AuthorizationCode;
+use Picabo\OAuth2\Storage\AuthorizationCodes\IAuthorizationCode;
 use Picabo\OAuth2\Storage\Clients\IClient;
 use Picabo\OAuth2\Storage\Clients\IClientStorage;
 use Picabo\OAuth2\Storage\ITokenFacade;
@@ -28,9 +31,10 @@ abstract class GrantTestCase extends TestCase
     protected $accessToken;
     protected $refreshToken;
     protected $authorizationCode;
-    protected $user;
     protected TokenContext $token;
+    protected $tokenFacade;
     protected $input;
+    protected $user;
 
     protected function setUp(): void
     {
@@ -40,10 +44,11 @@ abstract class GrantTestCase extends TestCase
         $this->accessTokenEntity = Mockery::mock(IAccessToken::class);
         $this->refreshTokenEntity = Mockery::mock(IRefreshToken::class);
         $this->refreshTokenStorage = Mockery::mock(IRefreshTokenStorage::class);
-        $this->accessToken = Mockery::mock(AccessToken::class);
-        $this->refreshToken = Mockery::mock(RefreshToken::class);
-        $this->authorizationCode = Mockery::mock(AuthorizationCode::class);
+        $this->accessToken = Mockery::mock(AccessToken::class, IAccessToken::class);
+        $this->refreshToken = Mockery::mock(RefreshToken::class, IRefreshToken::class);
+        $this->authorizationCode = Mockery::mock(AuthorizationCode::class, IAuthorizationCode::class);
         $this->token = new TokenContext();
+        $this->tokenFacade = Mockery::mock(ITokenFacade::class);
         $this->input = Mockery::mock(IInput::class);
         $this->user = Mockery::mock(User::class);
     }
@@ -60,15 +65,65 @@ abstract class GrantTestCase extends TestCase
                 ->andReturn($value);
         }
     }
+}
 
-    /**
-     * Create tokens mocks
-     * @param array<ITokenFacade> $mocks identifier => MockInterface
-     */
-    protected function createTokenMocks(array $mocks): void
+
+class XGenerator implements IKeyGenerator
+{
+    public function __construct(
+        private readonly string $dummyKey
+    )
     {
-        foreach ($mocks as $mock) {
-            $this->token->addToken($mock);
-        }
+    }
+
+    public function generate(int $length = 40): string
+    {
+        return $this->dummyKey;
+    }
+}
+
+
+class XAccessStorage implements IAccessTokenStorage
+{
+    public function __construct(
+        private readonly IAccessToken $accessToken,
+    )
+    {
+    }
+
+    public function store(IAccessToken $accessToken): void
+    {
+    }
+
+    public function remove(string $accessToken): void
+    {
+    }
+
+    public function getValidAccessToken(string $accessToken): ?IAccessToken
+    {
+        return empty($accessToken) ? null : $this->accessToken;
+    }
+}
+
+
+class XRefreshStorage implements IRefreshTokenStorage
+{
+    public function __construct(
+        private readonly IRefreshToken $token,
+    )
+    {
+    }
+
+    public function store(IRefreshToken $refreshToken): void
+    {
+    }
+
+    public function remove(string $refreshToken): void
+    {
+    }
+
+    public function getValidRefreshToken(string $refreshToken): ?IRefreshToken
+    {
+        return (empty($refreshToken)) ? null : $this->token;
     }
 }

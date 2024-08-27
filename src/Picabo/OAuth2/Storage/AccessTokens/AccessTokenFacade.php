@@ -30,7 +30,7 @@ class AccessTokenFacade implements ITokenFacade
     /**
      * Create access token
      */
-    public function create(IClient $client, string|int $userId, array $scope = []): ITokens
+    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens
     {
         $accessExpires = new DateTime;
         $accessExpires->modify('+' . $this->lifetime . ' seconds');

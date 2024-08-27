@@ -27,7 +27,7 @@ interface ITokenFacade
      * @throws InvalidScopeException
      * @return ITokens|null
      */
-    public function create(IClient $client, string|int $userId, array $scope = []): ?ITokens;
+    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens;
 
     /**
      * Returns token entity

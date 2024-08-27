@@ -6,53 +6,54 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/GrantTestCase.php';
 
 use Picabo\OAuth2\Grant\AuthorizationCode;
-use Picabo\OAuth2\Storage\ITokenFacade;
+use Picabo\OAuth2\IKeyGenerator;
+use Picabo\OAuth2\KeyGenerator;
+use Picabo\OAuth2\Storage\AccessTokens\AccessTokenFacade;
 use Picabo\OAuth2\Storage\AuthorizationCodes;
 use Mockery;
+use Picabo\OAuth2\Storage\RefreshTokens\RefreshTokenFacade;
 use ReflectionClass;
 use Tester\Assert;
 
 class AuthorizationCodeTest extends GrantTestCase
 {
 
-    private AuthorizationCode $grant;
+    private AuthorizationCode $authorization;
 
     public function testVerifyRequest(): void
     {
         $data = ['code' => '98b2950c11d8f3aa5773993ce0db712809524eeb4e625db00f39fb1530eee4ec'];
 
         $entity = Mockery::mock(AuthorizationCodes\IAuthorizationCode::class);
-        $storage = Mockery::mock(AuthorizationCodes\IAuthorizationCode::class);
+        $authStorage = Mockery::mock(AuthorizationCodes\IAuthorizationCodeStorage::class);
 
-        $storage->expects('remove')
+        $authStorage->expects('getValidAuthorizationCode')
             ->once()
-            ->with($data['code']);
+            ->andReturn(null);
+
+        $authStorage->expects('remove')
+            ->once();
+
+        // the exception is thrown here
+        $this->token->addToken(
+            new AuthorizationCodes\AuthorizationCodeFacade(
+                999,
+                Mockery::mock(KeyGenerator::class, IKeyGenerator::class),
+                $authStorage
+            )
+        );
 
         $this->createInputMock($data);
-        $this->token->expects('getToken')
-            ->atLeast()
-            ->once()
-            ->with(ITokenFacade::AUTHORIZATION_CODE)
-            ->andReturn($this->authorizationCode);
-
-        $this->authorizationCode->expects('getEntity')
-            ->once()
-            ->with($data['code'])
-            ->andReturn($entity);
-
-        $this->authorizationCode->expects('getStorage')
-            ->once()
-            ->andReturn($storage);
 
         $entity->expects('getScope')
             ->once()
             ->andReturn([]);
 
         Assert::throws(function () {
-            $reflection = new ReflectionClass($this->grant);
+            $reflection = new ReflectionClass($this->authorization);
             $method = $reflection->getMethod('verifyRequest');
-            $method->invoke($this->grant);
-        }, \Picabo\OAuth2\Exceptions\UnauthorizedClientException::class);
+            $method->invoke($this->authorization);
+        }, \Picabo\OAuth2\Storage\Exceptions\InvalidAuthorizationCodeException::class);
     }
 
     public function testGenerateAccessToken(): void
@@ -66,24 +67,51 @@ class AuthorizationCodeTest extends GrantTestCase
             'client_secret' => 'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12',
             'scope' => null
         ]);
-        $this->createTokenMocks([
-            ITokenFacade::ACCESS_TOKEN => $this->accessToken,
-            ITokenFacade::REFRESH_TOKEN => $this->refreshToken
-        ]);
 
-        $this->client->expects('getClient')->once()->andReturn($this->clientEntity);
+        $this->token->addToken(
+            new AccessTokenFacade(
+                $lifetime,
+                new XGenerator($access),
+                new XAccessStorage($this->accessTokenEntity)
+            ),
+        );
+        $this->token->addToken(
+            new RefreshTokenFacade(
+                $lifetime,
+                new XGenerator($refresh),
+                new XRefreshStorage($this->refreshTokenEntity)
+            )
+        );
 
-        $this->user->expects('getId')->atLeast()->once()->andReturn(1);
-        $this->accessToken->expects('create')->once()->with($this->clientEntity, 1, [])->andReturn($this->accessTokenEntity);
-        $this->accessToken->expects('getLifetime')->once()->andReturn($lifetime);
-        $this->refreshToken->expects('create')->once()->with($this->clientEntity, 1, [])->andReturn($this->refreshTokenEntity);
+        $this->clientEntity
+            ->expects('getId')
+            ->once()
+            ->andReturn(1);
 
-        $this->accessTokenEntity->expects('getAccessToken')->once()->andReturn($access);
-        $this->refreshTokenEntity->expects('getRefreshToken')->once()->andReturn($refresh);
+        $this->client
+            ->expects('getClient')
+            ->once()
+            ->andReturn($this->clientEntity);
 
-        $reflection = new ReflectionClass($this->grant);
+        $this->user
+            ->expects('getId')
+            ->atLeast()
+            ->once()
+            ->andReturn(1);
+
+        $this->accessTokenEntity
+            ->expects('getAccessToken')
+            ->once()
+            ->andReturn($access);
+
+        $this->refreshTokenEntity
+            ->expects('getRefreshToken')
+            ->once()
+            ->andReturn($refresh);
+
+        $reflection = new ReflectionClass($this->authorization);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->grant);
+        $response = $method->invoke($this->authorization);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);
@@ -94,9 +122,9 @@ class AuthorizationCodeTest extends GrantTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->grant = new AuthorizationCode($this->input, $this->token, $this->client, $this->user);
+        $this->authorization = new AuthorizationCode($this->input, $this->token, $this->client, $this->user);
     }
-
 }
+
 
 (new AuthorizationCodeTest())->run();

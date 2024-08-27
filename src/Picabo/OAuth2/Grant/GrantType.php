@@ -110,7 +110,7 @@ abstract class GrantType implements IGrant
     {
         $scope = $this->input->getParameter(self::SCOPE_KEY);
         return !is_array($scope) ?
-            array_filter(explode(',', str_replace(' ', ',', $scope))) :
+            array_filter(explode(',', str_replace(' ', ',', strval($scope)))) :
             $scope;
     }
 }

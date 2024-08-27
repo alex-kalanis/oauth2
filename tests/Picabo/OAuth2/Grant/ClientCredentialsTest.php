@@ -7,13 +7,14 @@ require_once __DIR__ . '/GrantTestCase.php';
 
 use Picabo\OAuth2\Grant\ClientCredentials;
 use Picabo\OAuth2\Grant\GrantType;
-use Picabo\OAuth2\Storage\ITokenFacade;
+use Picabo\OAuth2\Storage\AccessTokens\AccessTokenFacade;
+use Picabo\OAuth2\Storage\RefreshTokens\RefreshTokenFacade;
 use ReflectionClass;
 use Tester\Assert;
 
 class ClientCredentialsTest extends GrantTestCase
 {
-    protected ClientCredentials $grant;
+    protected ClientCredentials $credentials;
 
     public function testThrowsExceptionWhenClientSecretIsNotProvided(): void
     {
@@ -23,9 +24,9 @@ class ClientCredentialsTest extends GrantTestCase
             ->andReturn(null);
 
         Assert::throws(function () {
-            $reflection = new ReflectionClass($this->grant);
+            $reflection = new ReflectionClass($this->credentials);
             $method = $reflection->getMethod('verifyRequest');
-            $method->invoke($this->grant);
+            $method->invoke($this->credentials);
         }, \Picabo\OAuth2\Exceptions\UnauthorizedClientException::class);
     }
 
@@ -40,23 +41,51 @@ class ClientCredentialsTest extends GrantTestCase
             'client_secret' => 'a2a2f11ece9c35f117936fc44529a174e85ca68005b7b0d1d0d2b5842d907f12',
             'scope' => null
         ]);
-        $this->createTokenMocks([
-            ITokenFacade::ACCESS_TOKEN => $this->accessToken,
-            ITokenFacade::REFRESH_TOKEN => $this->refreshToken
-        ]);
 
-        $this->client->expects('getClient')->once()->andReturn($this->clientEntity);
+        $this->token->addToken(
+            new AccessTokenFacade(
+                $lifetime,
+                new XGenerator($access),
+                new XAccessStorage($this->accessTokenEntity)
+            ),
+        );
+        $this->token->addToken(
+            new RefreshTokenFacade(
+                $lifetime,
+                new XGenerator($refresh),
+                new XRefreshStorage($this->refreshTokenEntity)
+            )
+        );
 
-        $this->accessToken->expects('create')->once()->with($this->clientEntity, null, [])->andReturn($this->accessTokenEntity);
-        $this->accessToken->expects('getLifetime')->once()->andReturn($lifetime);
-        $this->refreshToken->expects('create')->once()->with($this->clientEntity, null, [])->andReturn($this->refreshTokenEntity);
+        $this->clientEntity
+            ->expects('getId')
+            ->once()
+            ->andReturn(1);
 
-        $this->accessTokenEntity->expects('getAccessToken')->once()->andReturn($access);
-        $this->refreshTokenEntity->expects('getRefreshToken')->once()->andReturn($refresh);
+        $this->client
+            ->expects('getClient')
+            ->once()
+            ->andReturn($this->clientEntity);
 
-        $reflection = new ReflectionClass($this->grant);
+        $this->user
+            ->expects('getId')
+            ->atLeast()
+            ->once()
+            ->andReturn(1);
+
+        $this->accessTokenEntity
+            ->expects('getAccessToken')
+            ->once()
+            ->andReturn($access);
+
+        $this->refreshTokenEntity
+            ->expects('getRefreshToken')
+            ->once()
+            ->andReturn($refresh);
+
+        $reflection = new ReflectionClass($this->credentials);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->grant);
+        $response = $method->invoke($this->credentials);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);
@@ -67,9 +96,10 @@ class ClientCredentialsTest extends GrantTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->grant = new ClientCredentials($this->input, $this->token, $this->client, $this->user);
+        $this->credentials = new ClientCredentials($this->input, $this->token, $this->client, $this->user);
     }
 
 }
+
 
 (new ClientCredentialsTest())->run();
