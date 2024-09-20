@@ -14,6 +14,13 @@ class RefreshToken implements IRefreshToken
 {
     use SmartObject;
 
+    /**
+     * @param string $refreshToken
+     * @param DateTime $expires
+     * @param string|int $clientId
+     * @param string|int|null $userId
+     * @param array<string> $scope
+     */
     public function __construct(
         private readonly string $refreshToken,
         private readonly DateTime $expires,

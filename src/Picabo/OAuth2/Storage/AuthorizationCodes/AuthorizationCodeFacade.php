@@ -30,7 +30,7 @@ class AuthorizationCodeFacade implements ITokenFacade
     /**
      * Create authorization code
      */
-    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens
+    public function create(IClient $client, string|int|null $userId, array $scope = []): IAuthorizationCode
     {
         $accessExpires = new DateTime;
         $accessExpires->modify('+' . $this->lifetime . ' seconds');
@@ -50,7 +50,7 @@ class AuthorizationCodeFacade implements ITokenFacade
     /**
      * Get authorization code entity
      */
-    public function getEntity(string $token): ?ITokens
+    public function getEntity(string $token): IAuthorizationCode
     {
         $entity = $this->storage->getValidAuthorizationCode($token);
         if (!$entity) {

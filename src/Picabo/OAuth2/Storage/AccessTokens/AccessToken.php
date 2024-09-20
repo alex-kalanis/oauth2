@@ -14,6 +14,13 @@ class AccessToken implements IAccessToken
 {
     use SmartObject;
 
+    /**
+     * @param string $accessToken
+     * @param DateTime $expires
+     * @param string|int $clientId
+     * @param string|int|null $userId
+     * @param array<string> $scope
+     */
     public function __construct(
         private readonly string $accessToken,
         private readonly DateTime $expires,

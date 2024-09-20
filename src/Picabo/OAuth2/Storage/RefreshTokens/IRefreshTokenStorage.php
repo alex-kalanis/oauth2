@@ -2,12 +2,14 @@
 
 namespace Picabo\OAuth2\Storage\RefreshTokens;
 
+use Picabo\OAuth2\Storage\ITokenStorage;
+
 /**
  * IRefreshTokenStorage
  * @package Picabo\OAuth2\Storage\RefreshTokens
  * @author Drahomír Hanák
  */
-interface IRefreshTokenStorage
+interface IRefreshTokenStorage extends ITokenStorage
 {
 
     /**
@@ -16,13 +18,6 @@ interface IRefreshTokenStorage
      * @return void
      */
     public function store(IRefreshToken $refreshToken): void;
-
-    /**
-     * Remove refresh token
-     * @param string $refreshToken
-     * @return void
-     */
-    public function remove(string $refreshToken): void;
 
     /**
      * Validate refresh token

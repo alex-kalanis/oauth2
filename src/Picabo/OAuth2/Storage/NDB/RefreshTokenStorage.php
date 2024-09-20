@@ -3,6 +3,7 @@
 namespace Picabo\OAuth2\Storage\NDB;
 
 use DateTime;
+use Nette\Database\Table\ActiveRow;
 use Picabo\OAuth2\Storage\RefreshTokens\IRefreshToken;
 use Picabo\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage;
 use Picabo\OAuth2\Storage\RefreshTokens\RefreshToken;
@@ -42,6 +43,7 @@ class RefreshTokenStorage implements IRefreshTokenStorage
     /******************** IRefreshTokenStorage ********************/
     /**
      * Get authorization code table
+     * @return Selection<ActiveRow>
      */
     protected function getTable(): Selection
     {
@@ -74,10 +76,10 @@ class RefreshTokenStorage implements IRefreshTokenStorage
         }
 
         return new RefreshToken(
-            $row['refresh_token'],
-            new DateTime($row['expires_at']),
-            $row['client_id'],
-            $row['user_id']
+            strval($row['refresh_token']),
+            new DateTime(strval($row['expires_at'])),
+            is_numeric($row['client_id'])? intval($row['client_id']) : strval($row['client_id']),
+            is_null($row['user_id']) ? null : strval($row['user_id']),
         );
     }
 }

@@ -4,6 +4,7 @@ namespace Picabo\OAuth2\Application;
 
 use Picabo\OAuth2\Http\IInput;
 use Picabo\OAuth2\Storage\AccessTokens\AccessToken;
+use Picabo\OAuth2\Storage\AccessTokens\AccessTokenFacade;
 use Picabo\OAuth2\Storage\Exceptions\InvalidAccessTokenException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
@@ -16,7 +17,7 @@ use Nette\Application\UI\Presenter;
 abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 {
 
-    protected AccessToken $accessToken;
+    protected AccessTokenFacade $accessToken;
     private IInput $input;
 
     /**
@@ -28,17 +29,17 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
     }
 
     /**
-     * Access token manager
-     * @param AccessToken $accessToken
+     * Access token manager facade
+     * @param AccessTokenFacade $accessToken
      */
-    public function injectAccessToken(AccessToken $accessToken): void
+    public function injectAccessToken(AccessTokenFacade $accessToken): void
     {
         $this->accessToken = $accessToken;
     }
 
     /**
      * Check presenter requirements
-     * @param \ReflectionClass|\ReflectionMethod $element
+     * @param \ReflectionClass<object>|\ReflectionMethod $element
      * @throws ForbiddenRequestException
      */
     public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void

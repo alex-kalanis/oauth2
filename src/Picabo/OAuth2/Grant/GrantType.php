@@ -42,29 +42,32 @@ abstract class GrantType implements IGrant
      * Get access token
      * @throws UnauthorizedClientException
      * @throws InvalidGrantTypeException
-     * @return array
+     * @return array<string, string|int>
      */
     public final function getAccessToken(): array
     {
-        if (!$this->getClient()) {
+        if (!$client = $this->getClient()) {
             throw new UnauthorizedClientException('Client is not found');
         }
 
-        $this->verifyGrantType();
+        $this->verifyGrantType($client);
         $this->verifyRequest();
-        return $this->generateAccessToken();
+        return $this->generateAccessToken($client);
     }
 
     /**
      * Get client
-     * @return IClient
+     * @return IClient|null
      */
-    protected function getClient(): IClient
+    private function getClient(): ?IClient
     {
         if (!$this->client) {
             $clientId = $this->input->getParameter(self::CLIENT_ID_KEY);
             $clientSecret = $this->input->getParameter(self::CLIENT_SECRET_KEY);
-            $this->client = $this->clientStorage->getClient($clientId, $clientSecret);
+            $this->client = $this->clientStorage->getClient(
+                is_numeric($clientId) ? intval($clientId) : strval($clientId),
+                is_null($clientSecret) ? null : strval($clientSecret)
+            );
         }
         return $this->client;
     }
@@ -73,17 +76,18 @@ abstract class GrantType implements IGrant
 
     /**
      * Verify grant type
+     * @param IClient $client
      * @throws UnauthorizedClientException
      * @throws InvalidGrantTypeException
      */
-    protected function verifyGrantType(): void
+    protected function verifyGrantType(IClient $client): void
     {
         $grantType = $this->input->getParameter(self::GRANT_TYPE_KEY);
         if (!$grantType) {
             throw new InvalidGrantTypeException;
         }
 
-        if (!$this->clientStorage->canUseGrantType($this->getClient()->getId(), $grantType)) {
+        if (!$this->clientStorage->canUseGrantType($client->getId(), strval($grantType))) {
             throw new UnauthorizedClientException;
         }
     }
@@ -98,19 +102,20 @@ abstract class GrantType implements IGrant
 
     /**
      * Generate access token
+     * @param IClient $client
      * @return array<string, string|int>
      */
-    protected abstract function generateAccessToken(): array;
+    protected abstract function generateAccessToken(IClient $client): array;
 
     /**
      * Get scope as array - allowed separators: ',' AND ' '
-     * @return array
+     * @return array<string>
      */
     protected function getScope(): array
     {
         $scope = $this->input->getParameter(self::SCOPE_KEY);
         return !is_array($scope) ?
             array_filter(explode(',', str_replace(' ', ',', strval($scope)))) :
-            $scope;
+            array_filter(array_map('strval', $scope));
     }
 }

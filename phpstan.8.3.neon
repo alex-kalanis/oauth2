@@ -1,10 +1,16 @@
 parameters:
-	level: 9
-	paths:
-		- 'src'
-	excludePaths:
-		- 'tests/Drahak/bootstrap.php'
-		- 'tests/Drahak/DatabaseTestCase.php'
-		- 'tests/Drahak/TestCase.php'
-	bootstrapFiles:
-		- 'tests/Drahak/bootstrap.php'
+    level: 9
+    paths:
+        - 'src'
+    excludePaths:
+        # Exclude these files that are OK
+        - 'src/Picabo/OAuth2/Http/Input.php'
+        # tests
+        - 'tests/Picabo/bootstrap.php'
+        - 'tests/Picabo/DatabaseTestCase.php'
+        - 'tests/Picabo/TestCase.php'
+    bootstrapFiles:
+        - 'tests/Picabo/bootstrap.php'
+    ignoreErrors:
+        # strval, intval, floatval, boolval
+        - '#Parameter \#1 \$va[rl]u?e? of function [sibf][tnol][rtoo][la]?t?val expects#'

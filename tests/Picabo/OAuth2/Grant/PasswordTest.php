@@ -85,7 +85,7 @@ class PasswordTest extends GrantTestCase
 
         $reflection = new ReflectionClass($this->pass);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->pass);
+        $response = $method->invoke($this->pass, $this->clientEntity);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);

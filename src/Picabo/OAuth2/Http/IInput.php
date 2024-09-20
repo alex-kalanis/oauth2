@@ -12,16 +12,16 @@ interface IInput
 
     /**
      * Get all parameters
-     * @return array
+     * @return array<string, mixed>
      */
     public function getParameters(): array;
 
     /**
      * Get single parameter value by name
      * @param string $name
-     * @return string|int|null
+     * @return mixed
      */
-    public function getParameter(string $name): string|int|null;
+    public function getParameter(string $name): mixed;
 
     /**
      * Get authorization token

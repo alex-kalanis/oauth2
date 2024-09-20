@@ -30,7 +30,7 @@ class RefreshTokenFacade implements ITokenFacade
     /**
      * Create new refresh token
      */
-    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens
+    public function create(IClient $client, string|int|null $userId, array $scope = []): IRefreshToken
     {
         $expires = new DateTime;
         $expires->modify('+' . $this->lifetime . ' seconds');
@@ -48,7 +48,7 @@ class RefreshTokenFacade implements ITokenFacade
     /**
      * Get refresh token entity
      */
-    public function getEntity(string $token): ?ITokens
+    public function getEntity(string $token): IRefreshToken
     {
         $entity = $this->storage->getValidRefreshToken($token);
         if (!$entity) {

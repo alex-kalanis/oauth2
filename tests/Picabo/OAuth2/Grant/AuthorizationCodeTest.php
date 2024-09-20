@@ -111,7 +111,7 @@ class AuthorizationCodeTest extends GrantTestCase
 
         $reflection = new ReflectionClass($this->authorization);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->authorization);
+        $response = $method->invoke($this->authorization, $this->clientEntity);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);

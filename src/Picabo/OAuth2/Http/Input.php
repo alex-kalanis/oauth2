@@ -14,7 +14,7 @@ class Input implements IInput
 {
     use SmartObject;
 
-    /** @var array|null */
+    /** @var array<string|int, mixed>|null */
     private ?array $data = null;
 
     public function __construct(
@@ -26,9 +26,9 @@ class Input implements IInput
     /**
      * Get single parameter by key
      * @param string $name
-     * @return string|int|null
+     * @return mixed
      */
-    public function getParameter(string $name): string|int|null
+    public function getParameter(string $name): mixed
     {
         $parameters = $this->getParameters();
         return $parameters[$name] ?? null;
@@ -36,7 +36,7 @@ class Input implements IInput
 
     /**
      * Get all parameters
-     * @return array
+     * @return array<string|int, mixed>
      */
     public function getParameters(): array
     {
@@ -46,7 +46,7 @@ class Input implements IInput
             } else if ($this->request->getPost()) {
                 $this->data = $this->request->getPost();
             } else {
-                $this->data = $this->parseRequest(file_get_contents('php://input'));
+                $this->data = $this->parseRequest(strval(file_get_contents('php://input')));
             }
         }
         return $this->data;
@@ -55,7 +55,7 @@ class Input implements IInput
     /**
      * Convert client request data to array or traversable
      * @param string $data
-     * @return array
+     * @return array<string|int, mixed>
      */
     private function parseRequest(string $data): array
     {

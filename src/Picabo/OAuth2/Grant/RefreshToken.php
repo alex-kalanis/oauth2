@@ -2,8 +2,12 @@
 
 namespace Picabo\OAuth2\Grant;
 
+use Picabo\OAuth2\Exceptions\InvalidScopeException;
+use Picabo\OAuth2\Storage\AccessTokens\IAccessToken;
+use Picabo\OAuth2\Storage\Clients\IClient;
 use Picabo\OAuth2\Storage\Exceptions\InvalidRefreshTokenException;
 use Picabo\OAuth2\Storage\ITokenFacade;
+use Picabo\OAuth2\Storage\RefreshTokens\IRefreshToken;
 
 /**
  * RefreshToken
@@ -28,7 +32,7 @@ class RefreshToken extends GrantType
     protected function verifyRequest(): void
     {
         $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
-        $refreshToken = $this->input->getParameter('refresh_token');
+        $refreshToken = strval($this->input->getParameter('refresh_token'));
 
         $refreshTokenStorage->getEntity($refreshToken);
         $refreshTokenStorage->getStorage()->remove($refreshToken);
@@ -36,15 +40,19 @@ class RefreshToken extends GrantType
 
     /**
      * Generate access token
+     * @param IClient $client
+     * @throws InvalidScopeException
      * @return array<string, string|int>
      */
-    protected function generateAccessToken(): array
+    protected function generateAccessToken(IClient $client): array
     {
         $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
         $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
-        $accessToken = $accessTokenStorage->create($this->getClient(), $this->user->getId());
-        $refreshToken = $refreshTokenStorage->create($this->getClient(), $this->user->getId());
+        /** @var IAccessToken $accessToken */
+        $accessToken = $accessTokenStorage->create($client, $this->user->getId());
+        /** @var IRefreshToken $refreshToken */
+        $refreshToken = $refreshTokenStorage->create($client, $this->user->getId());
 
         return [
             'access_token' => $accessToken->getAccessToken(),

@@ -55,7 +55,7 @@ class ImplicitTest extends GrantTestCase
 
         $reflection = new \ReflectionClass($this->implicit);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->implicit);
+        $response = $method->invoke($this->implicit, $this->clientEntity);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);

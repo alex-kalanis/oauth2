@@ -3,26 +3,21 @@
 namespace Picabo\OAuth2\Storage\AccessTokens;
 
 use Picabo\OAuth2\Exceptions\InvalidScopeException;
+use Picabo\OAuth2\Storage\ITokenStorage;
 
 /**
  * Access token storage interface
  * @package Picabo\OAuth2\Storage
  * @author Drahomír Hanák
  */
-interface IAccessTokenStorage
+interface IAccessTokenStorage extends ITokenStorage
 {
     /**
      * Store access token to given client access entity
      * @throws InvalidScopeException
-     */
-    public function store(IAccessToken $accessToken): void;
-
-    /**
-     * Remove access token from access entity
-     * @param string $accessToken
      * @return void
      */
-    public function remove(string $accessToken): void;
+    public function store(IAccessToken $accessToken): void;
 
     /**
      * Get valid access token

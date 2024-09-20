@@ -15,7 +15,6 @@ use Picabo\OAuth2\Storage\Exceptions\InvalidAuthorizationCodeException;
 use Picabo\OAuth2\Storage\Exceptions\TokenException;
 use Picabo\OAuth2\Exceptions\UnauthorizedClientException;
 use Picabo\OAuth2\Exceptions\UnsupportedResponseTypeException;
-use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Http\Url;
@@ -74,7 +73,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
                 throw new UnauthorizedClientException;
             }
 
-            $scope = array_filter(explode(',', str_replace(' ', ',', $scope)));
+            $scope = array_filter(explode(',', str_replace(' ', ',', strval($scope))));
             $code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
             $data = ['code' => $code->getAuthorizationCode()];
             $this->oauthResponse($data, $redirectUrl);
@@ -87,11 +86,10 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
     /**
      * Send OAuth response
-     * @param iterable $data
+     * @param iterable<string|int, mixed> $data
      * @param string|null $redirectUrl
      * @param int $code
      */
-    #[NoReturn]
     public function oauthResponse(iterable $data, ?string $redirectUrl = null, int $code = 200): void
     {
         if ($data instanceof Traversable) {
@@ -117,11 +115,15 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
     /**
      * Provide OAuth2 error response (redirect or at least JSON)
      */
-    #[NoReturn]
     public function oauthError(OAuthException $exception): void
     {
         $error = ['error' => $exception->getKey(), 'error_description' => $exception->getMessage()];
-        $this->oauthResponse($error, $this->getParameter('redirect_uri'), $exception->getCode());
+        $redirect = $this->getParameter('redirect_uri');
+        $this->oauthResponse(
+            $error,
+            empty($redirect) ? null : strval($redirect),
+            $exception->getCode()
+        );
     }
 
     /**
@@ -141,7 +143,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
                 $grantType = $this->getGrantType();
             }
 
-            $response = $grantType->getAccessToken($this->getHttpRequest());
+            $response = $grantType->getAccessToken();
             $this->oauthResponse($response, $redirectUrl);
         } catch (OAuthException $e) {
             $this->oauthError($e);
@@ -158,7 +160,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
     public function getGrantType(): IGrant
     {
         $request = $this->getHttpRequest();
-        $grantType = $request->getPost(GrantType::GRANT_TYPE_KEY);
+        $grantType = strval($request->getPost(GrantType::GRANT_TYPE_KEY));
         try {
             return $this->grantContext->getGrantType($grantType);
         } catch (InvalidStateException $e) {
@@ -172,9 +174,15 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
     protected function startup(): void
     {
         parent::startup();
-        $this->client = $this->clientStorage->getClient(
-            $this->getParameter(GrantType::CLIENT_ID_KEY),
-            $this->getParameter(GrantType::CLIENT_SECRET_KEY)
+        $clientId = $this->getParameter(GrantType::CLIENT_ID_KEY);
+        $clientSecret = $this->getParameter(GrantType::CLIENT_SECRET_KEY);
+        $client = $this->clientStorage->getClient(
+            is_numeric($clientId) ? intval($clientId) : strval($clientId),
+            is_null($clientSecret) ? null : strval($clientSecret)
         );
+        if (is_null($client)) {
+            throw new InvalidGrantException;
+        }
+        $this->client = $client;
     }
 }

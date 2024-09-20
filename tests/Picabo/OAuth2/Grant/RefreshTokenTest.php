@@ -112,7 +112,7 @@ class RefreshTokenTest extends GrantTestCase
 
         $reflection = new ReflectionClass($this->refresh);
         $method = $reflection->getMethod('generateAccessToken');
-        $response = $method->invoke($this->refresh);
+        $response = $method->invoke($this->refresh, $this->clientEntity);
 
         Assert::equal($response['access_token'], $access);
         Assert::equal($response['expires_in'], $lifetime);

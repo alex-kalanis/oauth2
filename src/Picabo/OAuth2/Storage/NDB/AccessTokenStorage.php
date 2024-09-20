@@ -3,6 +3,7 @@
 namespace Picabo\OAuth2\Storage\NDB;
 
 use DateTime;
+use Nette\Database\Table\ActiveRow;
 use Picabo\OAuth2\Exceptions\InvalidScopeException;
 use Picabo\OAuth2\Storage\AccessTokens\AccessToken;
 use Picabo\OAuth2\Storage\AccessTokens\IAccessToken;
@@ -52,7 +53,7 @@ class AccessTokenStorage implements IAccessTokenStorage
             }
         } catch (PDOException $e) {
             // MySQL error 1452 - Cannot add or update a child row: a foreign key constraint fails
-            if (in_array(1452, $e->errorInfo)) {
+            if (in_array(1452, (array) $e->errorInfo)) {
                 throw new InvalidScopeException;
             }
             throw $e;
@@ -62,6 +63,7 @@ class AccessTokenStorage implements IAccessTokenStorage
 
     /**
      * Get authorization code table
+     * @return Selection<ActiveRow>
      */
     protected function getTable(): Selection
     {
@@ -71,6 +73,7 @@ class AccessTokenStorage implements IAccessTokenStorage
     /******************** IAccessTokenStorage ********************/
     /**
      * Get scope table
+     * @return Selection<ActiveRow>
      */
     protected function getScopeTable(): Selection
     {
@@ -108,11 +111,11 @@ class AccessTokenStorage implements IAccessTokenStorage
             ->fetchPairs('scope_name');
 
         return new AccessToken(
-            $row['access_token'],
-            new DateTime($row['expires_at']),
-            $row['client_id'],
-            $row['user_id'],
-            array_keys($scopes)
+            strval($row['access_token']),
+            new DateTime(strval($row['expires_at'])),
+            is_numeric($row['client_id'])? intval($row['client_id']) : strval($row['client_id']),
+            is_null($row['user_id']) ? null : strval($row['user_id']),
+            array_map('strval', array_keys($scopes))
         );
     }
 }

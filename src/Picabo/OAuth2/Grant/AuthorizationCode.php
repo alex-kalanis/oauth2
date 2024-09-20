@@ -3,6 +3,7 @@
 namespace Picabo\OAuth2\Grant;
 
 use Picabo\OAuth2\Storage;
+use Picabo\OAuth2\Storage\Clients\IClient;
 use Picabo\OAuth2\Storage\ITokenFacade;
 
 /**
@@ -13,7 +14,9 @@ use Picabo\OAuth2\Storage\ITokenFacade;
 class AuthorizationCode extends GrantType
 {
 
-    /** @var array */
+    /**
+     * @var array<string>
+     */
     private array $scope = [];
 
     /**
@@ -30,7 +33,7 @@ class AuthorizationCode extends GrantType
      */
     protected function verifyRequest(): void
     {
-        $code = $this->input->getParameter('code');
+        $code = strval($this->input->getParameter('code'));
 
         $entity = $this->token->getToken(ITokenFacade::AUTHORIZATION_CODE)->getEntity($code);
         $this->scope = $entity->getScope();
@@ -39,7 +42,7 @@ class AuthorizationCode extends GrantType
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     protected function getScope(): array
     {
@@ -48,15 +51,17 @@ class AuthorizationCode extends GrantType
 
     /**
      * Generate access token
+     * @param IClient $client
      * @return array<string, string|int>
      */
-    protected function generateAccessToken(): array
+    protected function generateAccessToken(IClient $client): array
     {
-        $client = $this->getClient();
         $accessTokenStorage = $this->token->getToken(ITokenFacade::ACCESS_TOKEN);
         $refreshTokenStorage = $this->token->getToken(ITokenFacade::REFRESH_TOKEN);
 
+        /** @var Storage\AccessTokens\IAccessToken $accessToken */
         $accessToken = $accessTokenStorage->create($client, $this->user->getId(), $this->getScope());
+        /** @var Storage\RefreshTokens\IRefreshToken $refreshToken */
         $refreshToken = $refreshTokenStorage->create($client, $this->user->getId(), $this->getScope());
 
         return [

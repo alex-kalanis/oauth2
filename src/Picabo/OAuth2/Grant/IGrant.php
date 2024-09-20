@@ -25,7 +25,7 @@ interface IGrant
 
     /**
      * Get access token
-     * @return array
+     * @return array<string, string|int>
      */
     public function getAccessToken(): array;
 }

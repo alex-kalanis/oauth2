@@ -31,7 +31,7 @@ interface ITokens
 
     /**
      * Get scope
-     * @return array
+     * @return array<string>
      */
     public function getScope(): array;
 }

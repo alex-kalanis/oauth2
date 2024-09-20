@@ -13,6 +13,10 @@ class InvalidRequestException extends OAuthException
 {
     protected string $key = 'invalid_request';
 
+    /**
+     * @param string $message
+     * @param Exception|null $previous
+     */
     public function __construct($message = 'Invalid request parameters', Exception $previous = null)
     {
         parent::__construct($message, 400, $previous);

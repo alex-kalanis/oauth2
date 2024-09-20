@@ -14,6 +14,10 @@ class InvalidGrantException extends OAuthException
 {
     protected string $key = 'invalid_grant';
 
+    /**
+     * @param string $message
+     * @param Exception|null $previous
+     */
     public function __construct($message = 'Givent grant token is invalid or expired', Exception $previous = null)
     {
         parent::__construct($message, 400, $previous);

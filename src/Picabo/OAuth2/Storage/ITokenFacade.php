@@ -22,24 +22,36 @@ interface ITokenFacade
     /**
      * Create token
      * @param IClient $client
-     * @param string|int $userId
-     * @param array $scope
+     * @param string|int|null $userId
+     * @param array<string> $scope
      * @throws InvalidScopeException
-     * @return ITokens|null
+     * @return ITokens
      */
-    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens;
+    public function create(IClient $client, string|int|null $userId, array $scope = []): ITokens;
 
     /**
      * Returns token entity
      * @param string $token
      * @throws TokenException
-     * @return ITokens|null
+     * @return ITokens
      */
-    public function getEntity(string $token): ?ITokens;
+    public function getEntity(string $token): ITokens;
 
     /**
      * Get token identifier name
      * @return string
      */
     public function getIdentifier(): string;
+
+    /**
+     * Get lifetime of token
+     * @return int
+     */
+    public function getLifetime(): int;
+
+    /**
+     * Get actions over token storage
+     * @return ITokenStorage
+     */
+    public function getStorage(): ITokenStorage;
 }

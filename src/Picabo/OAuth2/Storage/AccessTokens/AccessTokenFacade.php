@@ -30,7 +30,7 @@ class AccessTokenFacade implements ITokenFacade
     /**
      * Create access token
      */
-    public function create(IClient $client, string|int|null $userId, array $scope = []): ?ITokens
+    public function create(IClient $client, string|int|null $userId, array $scope = []): IAccessToken
     {
         $accessExpires = new DateTime;
         $accessExpires->modify('+' . $this->lifetime . ' seconds');
@@ -50,7 +50,7 @@ class AccessTokenFacade implements ITokenFacade
     /**
      * Check access token
      */
-    public function getEntity(string $token): ?ITokens
+    public function getEntity(string $token): IAccessToken
     {
         $entity = $this->storage->getValidAccessToken($token);
         if (!$entity) {

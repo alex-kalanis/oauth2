@@ -16,7 +16,7 @@ interface IClientStorage
      * @param string|null $clientSecret
      * @return IClient|null
      */
-    public function getClient(string|int $clientId, ?string $clientSecret = null): ?IClient;
+    public function getClient(string|int $clientId, #[\SensitiveParameter] ?string $clientSecret = null): ?IClient;
 
     /**
      * Can client use given grant type

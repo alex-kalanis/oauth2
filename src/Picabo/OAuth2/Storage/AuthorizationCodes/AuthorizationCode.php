@@ -14,6 +14,13 @@ class AuthorizationCode implements IAuthorizationCode
 {
     use SmartObject;
 
+    /**
+     * @param string $authorizationCode
+     * @param DateTime $expires
+     * @param string|int $clientId
+     * @param string|int|null $userId
+     * @param array<string> $scope
+     */
     public function __construct(
         private readonly string $authorizationCode,
         private readonly DateTime $expires,

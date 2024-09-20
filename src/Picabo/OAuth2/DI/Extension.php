@@ -6,6 +6,7 @@ use Nette\Bootstrap\Configurator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Definitions\Definition;
+use Nette\Schema\Expect;
 
 /**
  * OAuth2 compiler extension
@@ -17,7 +18,7 @@ class Extension extends CompilerExtension
 
     /**
      * Default DI settings
-     * @var array
+     * @var array<string, string|int>
      */
     protected array $defaults = [
         'accessTokenStorage' => \Picabo\OAuth2\Storage\NDB\AccessTokenStorage::class,
@@ -47,7 +48,9 @@ class Extension extends CompilerExtension
     public function loadConfiguration(): void
     {
         $container = $this->getContainerBuilder();
-        $config = array_merge($this->defaults, $this->getConfig());
+        $passedConf = $this->getConfig();
+        $passedConf = is_object($passedConf) ? $this->propertiesFromConfig($passedConf) : (array) $passedConf;
+        $config = array_merge($this->defaults, $passedConf);
 
         // Library common
         $container->addDefinition($this->prefix('keyGenerator'))
@@ -104,6 +107,22 @@ class Extension extends CompilerExtension
             $container->addDefinition($this->prefix('clientStorage'))
                 ->setType($config['clientStorage']);
         }
+    }
+
+    /**
+     * @param object $config
+     * @return array<string, mixed>
+     */
+    private function propertiesFromConfig(object $config): array
+    {
+        $result = [];
+        $obj = new \ReflectionObject($config);
+        foreach ($obj->getProperties() as $property) {
+            if ($property->isPublic()) {
+                $result[$property->getName()] = $property->getValue();
+            }
+        }
+        return $result;
     }
 
     /**

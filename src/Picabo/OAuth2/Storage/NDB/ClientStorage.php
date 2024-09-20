@@ -2,6 +2,7 @@
 
 namespace Picabo\OAuth2\Storage\NDB;
 
+use Nette\Database\Table\ActiveRow;
 use Picabo\OAuth2\Storage\Clients\Client;
 use Picabo\OAuth2\Storage\Clients\IClient;
 use Picabo\OAuth2\Storage\Clients\IClientStorage;
@@ -45,14 +46,15 @@ class ClientStorage implements IClientStorage
             return null;
         }
         return new Client(
-            $data['client_id'],
-            $data['secret'],
-            $data['redirect_url']
+            is_numeric($data['client_id']) ? intval($data['client_id']) : strval($data['client_id']),
+            strval($data['secret']),
+            strval($data['redirect_url']),
         );
     }
 
     /**
      * Get client table selection
+     * @return Selection<ActiveRow>
      */
     protected function getTable(): Selection
     {
@@ -73,6 +75,6 @@ class ClientStorage implements IClientStorage
 			RIGHT JOIN oauth_grant AS g ON g.grant_id = cg.grant_id AND g.name = ?
 			WHERE cg.client_id = ?
 		', $grantType, $clientId);
-        return (bool)$result->fetch();
+        return boolval(intval($result->fetch()));
     }
 }

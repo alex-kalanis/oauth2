@@ -3,27 +3,22 @@
 namespace Picabo\OAuth2\Storage\AuthorizationCodes;
 
 use Picabo\OAuth2\Exceptions\InvalidScopeException;
+use Picabo\OAuth2\Storage\ITokenStorage;
 
 /**
  * IAuthorizationCodeStorage
  * @package Picabo\OAuth2\Storage\AuthorizationCodes
  * @author Drahomír Hanák
  */
-interface IAuthorizationCodeStorage
+interface IAuthorizationCodeStorage extends ITokenStorage
 {
 
     /**
      * Store authorization code
      * @throws InvalidScopeException
-     */
-    public function store(IAuthorizationCode $authorizationCode);
-
-    /**
-     * Remove authorization code
-     * @param string $authorizationCode
      * @return void
      */
-    public function remove(string $authorizationCode): void;
+    public function store(IAuthorizationCode $authorizationCode): void;
 
     /**
      * Get valid authorization code
