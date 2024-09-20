@@ -20,7 +20,13 @@
 		"ext-pdo": "*",
 		"ext-openssl": "*",
 		"ext-tokenizer": "*",
-		"nette/nette": "^3.2"
+		"nette/application": "^3.2",
+		"nette/bootstrap": "^3.2",
+		"nette/database": "^3.2",
+		"nette/di": "^3.2",
+		"nette/http": "^3.3",
+		"nette/security": "^3.2",
+		"nette/utils": "^4.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.5",
