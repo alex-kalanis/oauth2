@@ -4,13 +4,15 @@ filter:
     - '.github/*'
     - 'examples/*'
     - 'php-tests/*'
-  paths: {  }
+  paths: {
+    - 'php-src/*'
+  }
 
 build:
   image: default-bionic
   environment:
     php:
-      version: '8.3'
+      version: '8.1'
   dependencies:
     before:
       - wget -O composer.phar https://getcomposer.org/composer.phar
