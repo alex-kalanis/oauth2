@@ -1,15 +1,20 @@
 OAuth2 Provider
 ===============
 
-![Build Status](https://github.com/alex-kalanis/oauth/actions/workflows/code_checks.yml/badge.svg)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alex-kalanis/oauth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alex-kalanis/oauth/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/alex-kalanis/oauth/v/stable.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth)
+![Build Status](https://github.com/alex-kalanis/oauth2/actions/workflows/code_checks.yml/badge.svg)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alex-kalanis/oauth2/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alex-kalanis/oauth2/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/alex-kalanis/oauth2/v/stable.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth2)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
-[![Downloads](https://img.shields.io/packagist/dt/alex-kalanis/oauth.svg?v1)](https://packagist.org/packages/alex-kalanis/oauth)
-[![License](https://poser.pugx.org/alex-kalanis/oauth/license.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth)
-[![Code Coverage](https://scrutinizer-ci.com/g/alex-kalanis/oauth/badges/coverage.png?b=master&v=1)](https://scrutinizer-ci.com/g/alex-kalanis/oauth/?branch=master)
+[![Downloads](https://img.shields.io/packagist/dt/alex-kalanis/oauth2.svg?v1)](https://packagist.org/packages/alex-kalanis/oauth2)
+[![License](https://poser.pugx.org/alex-kalanis/oauth2/license.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth2)
+[![Code Coverage](https://scrutinizer-ci.com/g/alex-kalanis/oauth2/badges/coverage.png?b=master&v=1)](https://scrutinizer-ci.com/g/alex-kalanis/oauth2/?branch=master)
 
-This is repository for adding OAuth into Nette. For of older Drahak repository with refactor to run on php 8.1+.
+This is repository for adding OAuth into Nette. Fork of older Drahak repository with refactor to run on php 8.1+.
+
+The main difference is in directory structure, namespaces, tests, static analysis and dependency check.
+
+This package also supports multiple storages. With a few simple steps (implementing own version and extending configuration)
+you can add another storage. Currently available are Nette DB and Dibi.
 
 Requirements
 ------------
@@ -34,7 +39,7 @@ oauth2:
 	accessTokenLifetime: 3600 # 1 hour
 	refreshTokenLifetime: 36000 # 10 hours
 	authorizationCodeLifetime: 360 # 6 minutes
-	storage: 'ndb' # allowed values: 'ndb', 'dibi'
+	storage: 'ndb' # currently allowed values: 'ndb', 'dibi'
 	accessTokenStorage: 'kalanis\OAuth2\Storage\NDB\AccessTokenStorage'
 	authorizationCodeStorage: 'kalanis\OAuth2\Storage\NDB\AuthorizationCodeStorage'
 	clientStorage: 'kalanis\OAuth2\Storage\NDB\ClientStorage'
@@ -333,3 +338,9 @@ In case or error:
 	"error_description": "Invalid refresh token"
 }
 ```
+
+### Subnotes:
+
+I run this locally on my own Docker instances which was based on phpdocker.io. So you do
+not see the whole project. I also have my private tasks for it which aren't part of the
+repository.
