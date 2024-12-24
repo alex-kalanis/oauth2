@@ -4,9 +4,8 @@ filter:
     - '.github/*'
     - 'examples/*'
     - 'php-tests/*'
-  paths: {
+  paths:
     - 'php-src/*'
-  }
 
 build:
   image: default-bionic
