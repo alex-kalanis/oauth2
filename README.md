@@ -34,11 +34,17 @@ oauth2:
 	accessTokenLifetime: 3600 # 1 hour
 	refreshTokenLifetime: 36000 # 10 hours
 	authorizationCodeLifetime: 360 # 6 minutes
+	storage: 'ndb' # allowed values: 'ndb', 'dibi'
+	accessTokenStorage: 'kalanis\OAuth2\Storage\NDB\AccessTokenStorage'
+	authorizationCodeStorage: 'kalanis\OAuth2\Storage\NDB\AuthorizationCodeStorage'
+	clientStorage: 'kalanis\OAuth2\Storage\NDB\ClientStorage'
+	refreshTokenStorage: 'kalanis\OAuth2\Storage\NDB\RefreshTokenStorage'
 ```
 
 - `accessTokenLifetime` - access token lifetime in seconds
 - `refreshTokenLifetime` - refresh token lifetime in seconds
 - `authorizationCodeLifetime` - authorization code lifetime in seconds
+- `storage` - storage will switch between default NDB and dibi storage. You can use your storage for each storage part.
 
 OAuth2
 ------

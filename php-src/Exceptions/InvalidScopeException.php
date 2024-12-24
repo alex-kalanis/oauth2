@@ -2,6 +2,7 @@
 
 namespace kalanis\OAuth2\Exceptions;
 
+
 use Exception;
 
 

@@ -64,8 +64,9 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @param string $responseType
      * @param string $redirectUrl
      * @param string|null $scope
+     * @param string|null $state
      */
-    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = null): void
+    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = null, ?string $state = NULL): void
     {
         try {
             if ('code' !== $responseType) {
@@ -78,6 +79,9 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
             $scope = array_filter(explode(',', str_replace(' ', ',', strval($scope))));
             $code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
             $data = ['code' => $code->getAuthorizationCode()];
+            if (!empty($state)) {
+                $data['state'] = $state;
+            }
             $this->oauthResponse($data, $redirectUrl);
         } catch (OAuthException $e) {
             $this->oauthError($e);

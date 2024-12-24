@@ -15,8 +15,10 @@ phpunit-*
 .phpunit.cache*
 
 # external libs
-temp/
-php-tests/temp/
+temp/*
+!temp/.gitkeep
+php-tests/temp/*
+!php-tests/temp/.gitkeep
 php-tests/external/
 php-tests/data/clover.xml
 discard/

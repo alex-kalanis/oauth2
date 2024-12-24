@@ -10,6 +10,10 @@
             "homepage": "http://www.drahak.eu"
         },
         {
+            "name": "Libor Vymětalík",
+            "homepage": "http://git.vymak.cz"
+        },
+        {
             "name": "Petr Kalanis Plšek",
             "homepage": "https://www.kalanys.com"
         }
@@ -29,6 +33,7 @@
     "require-dev": {
         "ext-tokenizer": "*",
         "nette/tester": "^2.5",
+        "dibi/dibi": "^5.0",
         "rector/rector": "^1.2",
         "shipmonk/composer-dependency-analyser": "^1.7",
         "friendsofphp/php-cs-fixer": "^3.0",

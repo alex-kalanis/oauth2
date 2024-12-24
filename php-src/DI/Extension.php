@@ -3,6 +3,8 @@
 namespace kalanis\OAuth2\DI;
 
 
+use kalanis\OAuth2\Storage\Clients\IClientStorage;
+use kalanis\OAuth2\Storage\ITokenStorage;
 use Nette\Bootstrap\Configurator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
@@ -17,19 +19,36 @@ class Extension extends CompilerExtension
 {
 
     /**
+     * @var array<string, array<string, class-string<ITokenStorage|IClientStorage>>>
+     */
+    protected array $storages = [
+        'ndb' => [
+            'accessTokenStorage' => \kalanis\OAuth2\Storage\NDB\AccessTokenStorage::class,
+            'authorizationCodeStorage' => \kalanis\OAuth2\Storage\NDB\AuthorizationCodeStorage::class,
+            'clientStorage' => \kalanis\OAuth2\Storage\NDB\ClientStorage::class,
+            'refreshTokenStorage' => \kalanis\OAuth2\Storage\NDB\RefreshTokenStorage::class,
+        ],
+        'dibi' => [
+            'accessTokenStorage' => \kalanis\OAuth2\Storage\Dibi\AccessTokenStorage::class,
+            'authorizationCodeStorage' => \kalanis\OAuth2\Storage\Dibi\AuthorizationCodeStorage::class,
+            'clientStorage' => \kalanis\OAuth2\Storage\Dibi\ClientStorage::class,
+            'refreshTokenStorage' => \kalanis\OAuth2\Storage\Dibi\RefreshTokenStorage::class,
+        ],
+    ];
+
+    /**
      * Default DI settings
      * @var array<string, string|int>
      */
     protected array $defaults = [
-        'accessTokenStorage' => \kalanis\OAuth2\Storage\NDB\AccessTokenStorage::class,
-        'authorizationCodeStorage' => \kalanis\OAuth2\Storage\NDB\AuthorizationCodeStorage::class,
-        'clientStorage' => \kalanis\OAuth2\Storage\NDB\ClientStorage::class,
-        'refreshTokenStorage' => \kalanis\OAuth2\Storage\NDB\RefreshTokenStorage::class,
-        'accessTokenLifetime' => 3600,
-        // 1 hour
-        'refreshTokenLifetime' => 36000,
-        // 10 hours
-        'authorizationCodeLifetime' => 360,
+        'accessTokenStorage' => null,
+        'authorizationCodeStorage' => null,
+        'clientStorage' => null,
+        'refreshTokenStorage' => null,
+        'accessTokenLifetime' => 3600, // 1 hour
+        'refreshTokenLifetime' => 36000, // 10 hours
+        'authorizationCodeLifetime' => 360, // 6 minutes
+        'storage' => null,
     ];
 
     /**
@@ -96,17 +115,23 @@ class Extension extends CompilerExtension
             ->addSetup('$service->addToken(?)', [$this->prefix('@refreshToken')])
             ->addSetup('$service->addToken(?)', [$this->prefix('@authorizationCode')]);
 
+        // Default fallback value
+        $storageIndex = 'ndb';
+
         // Nette database Storage
-//        if ($this->getByType($container, \Nette\Database\Explorer::class)) {
-            $container->addDefinition($this->prefix('accessTokenStorage'))
-                ->setType($config['accessTokenStorage']);
-            $container->addDefinition($this->prefix('refreshTokenStorage'))
-                ->setType($config['refreshTokenStorage']);
-            $container->addDefinition($this->prefix('authorizationCodeStorage'))
-                ->setType($config['authorizationCodeStorage']);
-            $container->addDefinition($this->prefix('clientStorage'))
-                ->setType($config['clientStorage']);
-//        }
+        if (strtoupper($config['storage']) == 'DIBI' || (is_null($config['storage']) && $this->getByType($container, 'DibiConnection'))) {
+            $storageIndex = 'dibi';
+        }
+
+        // Nette database Storage
+        $container->addDefinition($this->prefix('accessTokenStorage'))
+            ->setType($config['accessTokenStorage'] ?: $this->storages[$storageIndex]['accessTokenStorage']);
+        $container->addDefinition($this->prefix('refreshTokenStorage'))
+            ->setType($config['refreshTokenStorage'] ?: $this->storages[$storageIndex]['refreshTokenStorage']);
+        $container->addDefinition($this->prefix('authorizationCodeStorage'))
+            ->setType($config['authorizationCodeStorage'] ?: $this->storages[$storageIndex]['authorizationCodeStorage']);
+        $container->addDefinition($this->prefix('clientStorage'))
+            ->setType($config['clientStorage'] ?: $this->storages[$storageIndex]['clientStorage']);
     }
 
     /**
