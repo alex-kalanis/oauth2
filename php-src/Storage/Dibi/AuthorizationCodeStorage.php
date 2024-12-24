@@ -71,7 +71,7 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
             }
         } catch (\PDOException $e) {
             // MySQL error 1452 - Cannot add or update a child row: a foreign key constraint fails
-            if (in_array(1452, $e->errorInfo)) {
+            if (in_array(1452, (array) $e->errorInfo)) {
                 throw new InvalidScopeException;
             }
             throw $e;
@@ -86,7 +86,9 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
      */
     public function remove(string $token): void
     {
-        $this->context->delete($this->getTable())->where('authorization_code = %s', $token)->execute();
+        $this->context->delete($this->getTable())
+            ->where('authorization_code = %s', $token)
+            ->execute();
     }
 
     /**
@@ -96,8 +98,9 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
      */
     public function getValidAuthorizationCode($authorizationCode): ?AuthorizationCodes\IAuthorizationCode
     {
-        /** @var Row $row */
-        $row = $this->context->select('*')->from($this->getTable())
+        $row = $this->context
+            ->select('*')
+            ->from($this->getTable())
             ->where('authorization_code = %s', $authorizationCode)
             ->where('TIMEDIFF(expires_at, NOW()) >= 0')
             ->fetch();
@@ -106,7 +109,9 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
             return null;
         }
 
-        $scopes = $this->context->select('*')->from($this->getScopeTable())
+        $scopes = $this->context
+            ->select('*')
+            ->from($this->getScopeTable())
             ->where('authorization_code = %s', $authorizationCode)
             ->fetchPairs('scope_name');
 

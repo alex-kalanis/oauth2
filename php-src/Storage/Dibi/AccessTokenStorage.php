@@ -73,7 +73,7 @@ class AccessTokenStorage implements IAccessTokenStorage
             }
         } catch (\PDOException $e) {
             // MySQL error 1452 - Cannot add or update a child row: a foreign key constraint fails
-            if (in_array(1452, $e->errorInfo)) {
+            if (in_array(1452, (array) $e->errorInfo)) {
                 throw new InvalidScopeException;
             }
             throw $e;
@@ -87,7 +87,9 @@ class AccessTokenStorage implements IAccessTokenStorage
      */
     public function remove(string $token): void
     {
-        $this->context->delete($this->getTable())->where('access_token = %s', $token)->execute();
+        $this->context->delete($this->getTable())
+            ->where('access_token = %s', $token)
+            ->execute();
     }
 
     /**
@@ -97,8 +99,9 @@ class AccessTokenStorage implements IAccessTokenStorage
      */
     public function getValidAccessToken(string $accessToken): ?IAccessToken
     {
-        /** @var Row $row */
-        $row = $this->context->select('*')->from($this->getTable())
+        $row = $this->context
+            ->select('*')
+            ->from($this->getTable())
             ->where('access_token = %s', $accessToken)
             ->where('TIMEDIFF(expires_at, NOW()) >= 0')
             ->fetch();
@@ -107,7 +110,9 @@ class AccessTokenStorage implements IAccessTokenStorage
             return null;
         }
 
-        $scopes = $this->context->select('*')->from($this->getScopeTable())
+        $scopes = $this->context
+            ->select('*')
+            ->from($this->getScopeTable())
             ->where('access_token = %s', $accessToken)
             ->fetchPairs('scope_name');
 

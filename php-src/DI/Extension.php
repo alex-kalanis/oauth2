@@ -38,7 +38,7 @@ class Extension extends CompilerExtension
 
     /**
      * Default DI settings
-     * @var array<string, string|int>
+     * @var array<string, string|int|null>
      */
     protected array $defaults = [
         'accessTokenStorage' => null,
@@ -119,7 +119,7 @@ class Extension extends CompilerExtension
         $storageIndex = 'ndb';
 
         // Nette database Storage
-        if (strtoupper($config['storage']) == 'DIBI' || (is_null($config['storage']) && $this->getByType($container, 'DibiConnection'))) {
+        if ('DIBI' == strtoupper($config['storage']) || (is_null($config['storage']) && $this->getByType($container, 'DibiConnection'))) {
             $storageIndex = 'dibi';
         }
 
