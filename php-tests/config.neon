@@ -1,0 +1,28 @@
+parameters:
+    database:
+        driver: mysql
+        host: %OAUTH2_MYSQL_DB_HOST%
+        dbname: %OAUTH2_MYSQL_DB_NAME%
+        user: %OAUTH2_MYSQL_DB_USER%
+        password: %OAUTH2_MYSQL_DB_PASS%
+
+extensions:
+    oauth2: kalanis\OAuth2\DI\Extension
+
+php:
+    date.timezone: Europe/Prague
+
+database:
+    dsn: '%database.driver%:host=%database.host%;dbname=%database.dbname%'
+    user: %database.user%
+    password: %database.password%
+    debugger: true
+    options:
+        lazy: yes
+
+session:
+    autoStart: false
+
+oauth2:
+    accessTokenLifetime: 3600
+    refreshTokenLifetime: 36000

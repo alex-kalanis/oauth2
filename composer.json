@@ -1,42 +1,48 @@
 {
-	"name": "picabo/oauth2",
-	"type": "library",
-	"description": "Nette OAuth2 Provider bundle",
-	"keywords": ["nette", "OAuth2", "provider", "server", "drahak"],
-	"homepage": "http://www.drahak.eu",
-	"license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
-	"authors": [
-		{
-			"name": "Drahomír Hanák",
-			"homepage": "http://www.drahak.eu"
-		},
-		{
-			"name": "Petr Kalanis Plšek",
-			"homepage": "http://www.kalanys.com"
-		}
-	],
-	"require": {
-		"php": ">= 8.1.0",
-		"ext-pdo": "*",
-		"ext-openssl": "*",
-		"ext-tokenizer": "*",
-		"nette/application": "^3.2",
-		"nette/bootstrap": "^3.2",
-		"nette/database": "^3.2",
-		"nette/di": "^3.2",
-		"nette/http": "^3.3",
-		"nette/security": "^3.2",
-		"nette/utils": "^4.0"
-	},
-	"require-dev": {
-		"nette/tester": "^2.5",
-		"rector/rector": "^1.2",
-		"shipmonk/composer-dependency-analyser": "^1.7",
-		"mockery/mockery": "^1.6"
-	},
-	"autoload": {
-		"psr-4": {
-			"Picabo\\OAuth2\\": "src/Picabo/OAuth2/"
-		}
-	}
+    "name": "alex-kalanis/oauth2",
+    "type": "library",
+    "description": "Nette OAuth2 Provider bundle",
+    "keywords": ["nette", "OAuth2", "provider", "server", "drahak"],
+    "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+    "authors": [
+        {
+            "name": "Drahomír Hanák",
+            "homepage": "http://www.drahak.eu"
+        },
+        {
+            "name": "Petr Kalanis Plšek",
+            "homepage": "https://www.kalanys.com"
+        }
+    ],
+    "require": {
+        "php": ">= 8.1.0",
+        "ext-pdo": "*",
+        "ext-openssl": "*",
+        "nette/application": "^3.2",
+        "nette/bootstrap": "^3.2",
+        "nette/database": "^3.2",
+        "nette/di": "^3.2",
+        "nette/http": "^3.3",
+        "nette/security": "^3.2",
+        "nette/utils": "^4.0"
+    },
+    "require-dev": {
+        "ext-tokenizer": "*",
+        "nette/tester": "^2.5",
+        "rector/rector": "^1.2",
+        "shipmonk/composer-dependency-analyser": "^1.7",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "mockery/mockery": "^1.6",
+        "tracy/tracy": "^2.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "kalanis\\OAuth2\\": "php-src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "php-tests/"
+        }
+    }
 }

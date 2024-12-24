@@ -7,5 +7,6 @@
 /phpdocker   export-ignore
 /examples    export-ignore
 /temp        export-ignore
-/tests       export-ignore
+/php-tests   export-ignore
+/sql         export-ignore
 /vendor      export-ignore

@@ -16,9 +16,9 @@ phpunit-*
 
 # external libs
 temp/
-tests/temp/
-tests/external/
-tests/data/clover.xml
+php-tests/temp/
+php-tests/external/
+php-tests/data/clover.xml
 discard/
 
 # environment

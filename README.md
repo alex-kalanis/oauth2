@@ -1,21 +1,30 @@
 OAuth2 Provider
 ===============
-This repository is being developed and it's highly unstable.
+
+![Build Status](https://github.com/alex-kalanis/oauth/actions/workflows/code_checks.yml/badge.svg)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/alex-kalanis/oauth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/alex-kalanis/oauth/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/alex-kalanis/oauth/v/stable.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
+[![Downloads](https://img.shields.io/packagist/dt/alex-kalanis/oauth.svg?v1)](https://packagist.org/packages/alex-kalanis/oauth)
+[![License](https://poser.pugx.org/alex-kalanis/oauth/license.svg?v=1)](https://packagist.org/packages/alex-kalanis/oauth)
+[![Code Coverage](https://scrutinizer-ci.com/g/alex-kalanis/oauth/badges/coverage.png?b=master&v=1)](https://scrutinizer-ci.com/g/alex-kalanis/oauth/?branch=master)
+
+This is repository for adding OAuth into Nette. For of older Drahak repository with refactor to run on php 8.1+.
 
 Requirements
 ------------
-Drahak/OAuth2 requires PHP version 8.1.0 or higher. The only production dependency is [Nette framework 3.2.x](http://www.nette.org).
+kalanis/OAuth2 requires PHP version 8.1.0 or higher. The only production dependency is [Nette framework 3.2.x](http://www.nette.org).
 
 Installation & setup
 --------------------
 The easist way is to use [Composer](http://doc.nette.org/en/composer)
 
-	$ composer require drahak/oauth2:@dev
+	$ composer require alex-kalanis/oauth2
 
 Then add following code to your app bootstrap file before creating container:
 
 ```php
-Drahak\OAuth2\DI\Extension::install($configurator);
+kalanis\OAuth2\DI\Extension::install($configurator);
 ```
 
 Neon configuration
@@ -27,9 +36,9 @@ oauth2:
 	authorizationCodeLifetime: 360 # 6 minutes
 ```
 
-- `accessTokenLifetime` - access token life time in seconds
-- `refreshTokenLifetime` - refresh token life time in seconds
-- `authorizationCodeLifetime` - authorization code life time in seconds
+- `accessTokenLifetime` - access token lifetime in seconds
+- `refreshTokenLifetime` - refresh token lifetime in seconds
+- `authorizationCodeLifetime` - authorization code lifetime in seconds
 
 OAuth2
 ------
@@ -77,9 +86,9 @@ Presenter (`IOAuthPresenter`) that gives an access. In base it has 2 main method
 
 namespace MyApp\OAuth;
 
-use Drahak\OAuth2\Grant\IGrant;
-use Drahak\OAuth2\Application;
-use Drahak\OAuth2\OAuthException;
+use kalanis\OAuth2\Grant\IGrant;
+use kalanis\OAuth2\Application;
+use kalanis\OAuth2\Exceptions\OAuthException;
 
 class AuthorizationPresenter extends Application\OAuthPresenter
 {

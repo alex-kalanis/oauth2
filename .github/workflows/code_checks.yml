@@ -10,7 +10,26 @@ on:
 
 jobs:
   tests:
+    services:
+      mysql:
+        image: mysql:8.0.29
+        env:
+          MYSQL_ROOT_PASSWORD: 'dev_root'
+          MYSQL_DATABASE: 'dev_testing'
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd "mysqladmin ping -pdev_root"
+          --health-interval 10s
+          --health-start-period 10s
+          --health-timeout 5s
+          --health-retries 10
     runs-on: ubuntu-latest
+    env:
+      OAUTH2_MYSQL_DB_HOST: '127.0.0.1'
+      OAUTH2_MYSQL_DB_USER: 'root'
+      OAUTH2_MYSQL_DB_PASS: 'dev_root'
+      OAUTH2_MYSQL_DB_NAME: 'dev_testing'
     strategy:
       matrix:
         php: [ '8.1', '8.2', '8.3' ]
@@ -22,13 +41,13 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: xdebug
       - run: composer install --no-progress
-      - run: vendor/bin/phpunit
+      - run: vendor/bin/tester -C -j 1 php-tests
 
   code_style:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.1' ]
+        php: [ '8.3' ]
     name: PHP ${{ matrix.php }} code style
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.1' ]
+        php: [ '8.3' ]
     name: PHP ${{ matrix.php }} phpstan
     steps:
       - uses: actions/checkout@v2
@@ -58,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.1' ]
+        php: [ '8.3' ]
     name: PHP ${{ matrix.php }} problematic dependencies
     steps:
       - uses: actions/checkout@v2
