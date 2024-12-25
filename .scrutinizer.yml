@@ -12,6 +12,10 @@ build:
   environment:
     php:
       version: '8.1'
+    variables:
+      OAUTH2_MYSQL_DB_USER: 'root'
+      OAUTH2_MYSQL_DB_PASS: ''
+      OAUTH2_MYSQL_DB_NAME: 'scrutinizer_run'
   dependencies:
     before:
       - wget -O composer.phar https://getcomposer.org/composer.phar
@@ -19,15 +23,27 @@ build:
       - ./composer.phar install
   nodes:
     analysis:
+      services:
+        mysql: 8.0
+      project_setup:
+        before:
+          - sudo service start mysql || true
+          - mysql -e "CREATE DATABASE scrutinizer_run"
       tests:
         override:
           - php-scrutinizer-run
     coverage:
+      services:
+        mysql: 8.0
+      project_setup:
+        before:
+          - sudo service start mysql || true
+          - mysql -e "CREATE DATABASE scrutinizer_run"
       tests:
         override:
-          - command: XDEBUG_MODE=coverage ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover php-tests/data/clover.xml
+          - command: vendor/bin/tester -C -j 1 php-tests --coverage-src php-src/ --coverage php-tests/temp/clover.xml
             coverage:
-              file:  php-tests/data/clover.xml
+              file:  php-tests/temp/clover.xml
               format: php-clover
 
 coding_style:

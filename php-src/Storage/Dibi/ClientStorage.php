@@ -80,6 +80,6 @@ class ClientStorage implements IClientStorage
 			RIGHT JOIN oauth_grant AS g ON cg.grant_id = cg.grant_id AND g.name = %s
 			WHERE cg.client_id = %i
 		', $grantType, $clientId);
-        return boolval(intval($result->fetch()));
+        return !empty($result->fetch());
     }
 }

@@ -119,7 +119,7 @@ class Extension extends CompilerExtension
         $storageIndex = 'ndb';
 
         // Nette database Storage
-        if ('DIBI' == strtoupper($config['storage']) || (is_null($config['storage']) && $this->getByType($container, 'DibiConnection'))) {
+        if ('DIBI' == strtoupper(strval($config['storage'])) || (is_null($config['storage']) && $this->getByType($container, 'DibiConnection'))) {
             $storageIndex = 'dibi';
         }
 
