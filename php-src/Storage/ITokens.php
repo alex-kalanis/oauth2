@@ -8,7 +8,7 @@ use DateTime;
 
 /**
  * ITokens
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage
  */
 interface ITokens
 {

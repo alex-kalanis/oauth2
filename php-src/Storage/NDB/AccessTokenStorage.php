@@ -18,7 +18,7 @@ use PDOException;
 
 /**
  * AccessTokenStorage
- * @package kalanis\OAuth2\Storage\AccessTokens
+ * @package kalanis\OAuth2\Storage\NDB
  */
 class AccessTokenStorage implements IAccessTokenStorage
 {

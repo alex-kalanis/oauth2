@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * UnauthorizedClientException
- * @package kalanis\OAuth2\Application
+ * @package kalanis\OAuth2\Exceptions
  */
 class UnauthorizedClientException extends OAuthException
 {

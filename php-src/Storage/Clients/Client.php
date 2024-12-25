@@ -8,7 +8,7 @@ use Nette\SmartObject;
 
 /**
  * OAuth2 base client caret
- * @package kalanis\OAuth2\Storage\Entity
+ * @package kalanis\OAuth2\Storage\Clients
  */
 class Client implements IClient
 {

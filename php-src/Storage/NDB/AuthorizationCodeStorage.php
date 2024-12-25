@@ -16,7 +16,7 @@ use PDOException;
 
 /**
  * AuthorizationCode
- * @package kalanis\OAuth2\Storage\AuthorizationCodes
+ * @package kalanis\OAuth2\Storage\NDB
  */
 class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeStorage
 {

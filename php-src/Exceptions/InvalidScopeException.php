@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * InvalidScopeException
- * @package kalanis\OAuth2
+ * @package kalanis\OAuth2\Exceptions
  */
 class InvalidScopeException extends OAuthException
 {

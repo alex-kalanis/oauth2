@@ -5,7 +5,7 @@ namespace kalanis\OAuth2\Storage\Clients;
 
 /**
  * OAuth2 client entity
- * @package kalanis\OAuth2\Storage\Entity
+ * @package kalanis\OAuth2\Storage\Clients
  */
 interface IClient
 {

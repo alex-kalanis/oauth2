@@ -5,7 +5,7 @@ namespace kalanis\OAuth2\Storage\Clients;
 
 /**
  * Client manager interface
- * @package kalanis\OAuth2\DataSource
+ * @package kalanis\OAuth2\Storage\Clients
  */
 interface IClientStorage
 {

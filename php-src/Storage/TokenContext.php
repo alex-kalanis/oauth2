@@ -9,7 +9,7 @@ use Nette\SmartObject;
 
 /**
  * TokenContext
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage
  */
 class TokenContext
 {

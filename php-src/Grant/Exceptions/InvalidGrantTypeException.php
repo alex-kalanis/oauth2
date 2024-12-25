@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * InvalidGrantTypeException
- * @package kalanis\OAuth2\Grant
+ * @package kalanis\OAuth2\Grant\Exceptions
  */
 class InvalidGrantTypeException extends Exception
 {

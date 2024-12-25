@@ -13,7 +13,7 @@ use Nette\SmartObject;
 
 /**
  * Nette database RefreshToken storage
- * @package kalanis\OAuth2\Storage\RefreshTokens
+ * @package kalanis\OAuth2\Storage\Dibi
  */
 class RefreshTokenStorage implements IRefreshTokenStorage
 {

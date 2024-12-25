@@ -13,7 +13,7 @@ use Nette\SmartObject;
 
 /**
  * AccessToken
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage\AccessTokens
  */
 class AccessTokenFacade implements ITokenFacade
 {

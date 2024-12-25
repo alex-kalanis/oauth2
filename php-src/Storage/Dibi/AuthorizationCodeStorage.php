@@ -5,7 +5,6 @@ namespace kalanis\OAuth2\Storage\Dibi;
 
 use DateTime;
 use Dibi\Connection;
-use Dibi\Row;
 use kalanis\OAuth2\Exceptions\InvalidScopeException;
 use kalanis\OAuth2\Storage\AuthorizationCodes;
 use Nette\SmartObject;
@@ -13,7 +12,7 @@ use Nette\SmartObject;
 
 /**
  * AuthorizationCode
- * @package kalanis\OAuth2\Storage\AuthorizationCodes
+ * @package kalanis\OAuth2\Storage\Dibi
  */
 class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeStorage
 {

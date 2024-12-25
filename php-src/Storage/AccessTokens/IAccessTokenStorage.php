@@ -9,7 +9,7 @@ use kalanis\OAuth2\Storage\ITokenStorage;
 
 /**
  * Access token storage interface
- * @package kalanis\OAuth2\Storage
+ * @package kalanis\OAuth2\Storage\AccessTokens
  */
 interface IAccessTokenStorage extends ITokenStorage
 {

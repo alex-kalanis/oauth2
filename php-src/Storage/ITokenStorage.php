@@ -8,7 +8,7 @@ use kalanis\OAuth2\Storage\Exceptions\TokenException;
 
 /**
  * ITokenStorage
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage
  */
 interface ITokenStorage
 {

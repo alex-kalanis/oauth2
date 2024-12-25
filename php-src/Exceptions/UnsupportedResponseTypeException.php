@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * UnsupportedResponseTypeException
- * @package kalanis\OAuth2
+ * @package kalanis\OAuth2\Exceptions
  */
 class UnsupportedResponseTypeException extends OAuthException
 {

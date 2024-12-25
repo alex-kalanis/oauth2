@@ -3,8 +3,7 @@
 namespace kalanis\OAuth2\DI;
 
 
-use kalanis\OAuth2\Storage\Clients\IClientStorage;
-use kalanis\OAuth2\Storage\ITokenStorage;
+use kalanis\OAuth2\Storage;
 use Nette\Bootstrap\Configurator;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
@@ -19,20 +18,25 @@ class Extension extends CompilerExtension
 {
 
     /**
-     * @var array<string, array<string, class-string<ITokenStorage|IClientStorage>>>
+     * @var array<string, array{
+     *     accessTokenStorage: class-string<Storage\AccessTokens\IAccessTokenStorage>,
+     *     authorizationCodeStorage: class-string<Storage\AuthorizationCodes\IAuthorizationCodeStorage>,
+     *     clientStorage: class-string<Storage\Clients\IClientStorage>,
+     *     refreshTokenStorage: class-string<Storage\RefreshTokens\IRefreshTokenStorage>,
+     * }>
      */
     protected array $storages = [
         'ndb' => [
-            'accessTokenStorage' => \kalanis\OAuth2\Storage\NDB\AccessTokenStorage::class,
-            'authorizationCodeStorage' => \kalanis\OAuth2\Storage\NDB\AuthorizationCodeStorage::class,
-            'clientStorage' => \kalanis\OAuth2\Storage\NDB\ClientStorage::class,
-            'refreshTokenStorage' => \kalanis\OAuth2\Storage\NDB\RefreshTokenStorage::class,
+            'accessTokenStorage' => Storage\NDB\AccessTokenStorage::class,
+            'authorizationCodeStorage' => Storage\NDB\AuthorizationCodeStorage::class,
+            'clientStorage' => Storage\NDB\ClientStorage::class,
+            'refreshTokenStorage' => Storage\NDB\RefreshTokenStorage::class,
         ],
         'dibi' => [
-            'accessTokenStorage' => \kalanis\OAuth2\Storage\Dibi\AccessTokenStorage::class,
-            'authorizationCodeStorage' => \kalanis\OAuth2\Storage\Dibi\AuthorizationCodeStorage::class,
-            'clientStorage' => \kalanis\OAuth2\Storage\Dibi\ClientStorage::class,
-            'refreshTokenStorage' => \kalanis\OAuth2\Storage\Dibi\RefreshTokenStorage::class,
+            'accessTokenStorage' => Storage\Dibi\AccessTokenStorage::class,
+            'authorizationCodeStorage' => Storage\Dibi\AuthorizationCodeStorage::class,
+            'clientStorage' => Storage\Dibi\ClientStorage::class,
+            'refreshTokenStorage' => Storage\Dibi\RefreshTokenStorage::class,
         ],
     ];
 
@@ -151,6 +155,7 @@ class Extension extends CompilerExtension
     }
 
     /**
+     * @param ContainerBuilder $container
      * @param string $type
      * @return Definition|null
      */

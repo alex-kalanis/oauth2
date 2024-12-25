@@ -16,7 +16,10 @@ $_SERVER = array_intersect_key($_SERVER, array_flip(['PHP_SELF', 'SCRIPT_NAME', 
 $_SERVER['REQUEST_TIME'] = 1234567890;
 $_ENV = $_GET = $_POST = [];
 
-Tester\Environment::setup();
+// !!! beware !!! PhpStan and Nette/Tester have problems with each other!
+if (boolval(intval(strval(getenv('WITH_TEST_ENV'))))) {
+    Tester\Environment::setup();
+}
 
 //if (extension_loaded('xdebug')) {
 //    xdebug_disable();

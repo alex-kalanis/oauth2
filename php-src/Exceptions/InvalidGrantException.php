@@ -9,7 +9,7 @@ use Exception;
 /**
  * InvalidGrantException is thrown when provided authorization grant (authorization vode, resource owner credentials)
  * or refresh token is invalid, expired, revoked, does not match redirect URI used in authorization request
- * @package kalanis\OAuth2
+ * @package kalanis\OAuth2\Exceptions
  */
 class InvalidGrantException extends OAuthException
 {

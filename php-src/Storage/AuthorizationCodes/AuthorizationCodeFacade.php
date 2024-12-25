@@ -13,7 +13,7 @@ use Nette\SmartObject;
 
 /**
  * AuthorizationCode
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage\AuthorizationCodes
  */
 class AuthorizationCodeFacade implements ITokenFacade
 {

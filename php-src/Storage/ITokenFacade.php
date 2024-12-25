@@ -10,7 +10,7 @@ use kalanis\OAuth2\Storage\Exceptions\TokenException;
 
 /**
  * ITokenFacade
- * @package kalanis\OAuth2\Token
+ * @package kalanis\OAuth2\Storage
  */
 interface ITokenFacade
 {

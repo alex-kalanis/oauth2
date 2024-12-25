@@ -19,23 +19,6 @@ abstract class DatabaseTestCase extends TestCase
 
     protected Connection $connection;
     protected Explorer $dbExplorer;
-    private Container $container;
-
-    public function __construct()
-    {
-        $configurator = new Configurator();
-
-        $config = $configurator->setTempDirectory(TEMP_DIR);
-        $config->addStaticParameters([
-            'OAUTH2_MYSQL_DB_HOST' => strval(getenv('OAUTH2_MYSQL_DB_HOST')),
-            'OAUTH2_MYSQL_DB_NAME' => strval(getenv('OAUTH2_MYSQL_DB_NAME')),
-            'OAUTH2_MYSQL_DB_USER' => strval(getenv('OAUTH2_MYSQL_DB_USER')),
-            'OAUTH2_MYSQL_DB_PASS' => strval(getenv('OAUTH2_MYSQL_DB_PASS')),
-        ]);
-        $config->addConfig(__DIR__ . DIRECTORY_SEPARATOR . 'config.neon');
-
-        $this->container = $config->createContainer();
-    }
 
     /**
      * Setup database

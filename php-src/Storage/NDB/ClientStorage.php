@@ -14,7 +14,7 @@ use Nette\SmartObject;
 
 /**
  * Nette database client storage
- * @package kalanis\OAuth2\Storage\Clients
+ * @package kalanis\OAuth2\Storage\NDB
  */
 class ClientStorage implements IClientStorage
 {

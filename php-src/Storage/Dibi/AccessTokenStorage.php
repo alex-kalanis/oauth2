@@ -5,7 +5,6 @@ namespace kalanis\OAuth2\Storage\Dibi;
 
 use DateTime;
 use Dibi\Connection;
-use Dibi\Row;
 use kalanis\OAuth2\Exceptions\InvalidScopeException;
 use kalanis\OAuth2\Storage\AccessTokens\AccessToken;
 use kalanis\OAuth2\Storage\AccessTokens\IAccessToken;
@@ -15,7 +14,7 @@ use Nette\SmartObject;
 
 /**
  * AccessTokenStorage
- * @package kalanis\OAuth2\Storage\AccessTokens
+ * @package kalanis\OAuth2\Storage\Dibi
  */
 class AccessTokenStorage implements IAccessTokenStorage
 {
