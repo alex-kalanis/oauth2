@@ -8,7 +8,6 @@ filter:
     - 'php-src/*'
 
 build:
-  image: default-bionic
   environment:
     php:
       version: '8.1'
@@ -23,6 +22,12 @@ build:
       - ./composer.phar install
   nodes:
     analysis:
+      services:
+        mariadb: 11.1
+      project_setup:
+        before:
+          - sudo service start mysql || true
+          - mysql -e "CREATE DATABASE scrutinizer_run"
       tests:
         override:
           - php-scrutinizer-run
