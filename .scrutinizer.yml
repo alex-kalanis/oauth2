@@ -28,7 +28,7 @@ build:
           - php-scrutinizer-run
     coverage:
       services:
-        mysql: 8.0
+        mariadb: 11.1
       project_setup:
         before:
           - sudo service start mysql || true
