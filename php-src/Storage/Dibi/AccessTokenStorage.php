@@ -9,7 +9,6 @@ use kalanis\OAuth2\Exceptions\InvalidScopeException;
 use kalanis\OAuth2\Storage\AccessTokens\AccessToken;
 use kalanis\OAuth2\Storage\AccessTokens\IAccessToken;
 use kalanis\OAuth2\Storage\AccessTokens\IAccessTokenStorage;
-use Nette\SmartObject;
 
 
 /**
@@ -18,9 +17,6 @@ use Nette\SmartObject;
  */
 class AccessTokenStorage implements IAccessTokenStorage
 {
-
-    use SmartObject;
-
 
     public function __construct(
         private readonly Connection $context,
@@ -45,8 +41,6 @@ class AccessTokenStorage implements IAccessTokenStorage
     {
         return 'oauth_access_token_scope';
     }
-
-    /******************** IAccessTokenStorage ********************/
 
     /**
      * Store access token
@@ -94,7 +88,7 @@ class AccessTokenStorage implements IAccessTokenStorage
     /**
      * Get valid access token
      * @param string $accessToken
-     * @return IAccessToken|NULL
+     * @return IAccessToken|null
      */
     public function getValidAccessToken(string $accessToken): ?IAccessToken
     {

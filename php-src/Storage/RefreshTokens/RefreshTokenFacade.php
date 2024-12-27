@@ -8,7 +8,6 @@ use kalanis\OAuth2\IKeyGenerator;
 use kalanis\OAuth2\Storage\Clients\IClient;
 use kalanis\OAuth2\Storage\Exceptions\InvalidRefreshTokenException;
 use kalanis\OAuth2\Storage\ITokenFacade;
-use Nette\SmartObject;
 
 
 /**
@@ -17,12 +16,10 @@ use Nette\SmartObject;
  */
 class RefreshTokenFacade implements ITokenFacade
 {
-    use SmartObject;
-
     public function __construct(
         private readonly int $lifetime,
         private readonly IKeyGenerator $keyGenerator,
-        private readonly IRefreshTokenStorage $storage
+        private readonly IRefreshTokenStorage $storage,
     )
     {
     }
@@ -65,9 +62,6 @@ class RefreshTokenFacade implements ITokenFacade
     {
         return self::REFRESH_TOKEN;
     }
-
-
-    /****************** Getters & setters ******************/
 
     /**
      * Get token lifetime

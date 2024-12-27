@@ -10,7 +10,6 @@ use kalanis\OAuth2\Storage\Clients\IClient;
 use kalanis\OAuth2\Storage\Clients\IClientStorage;
 use kalanis\OAuth2\Storage\TokenContext;
 use Nette\Security\User;
-use Nette\SmartObject;
 
 
 /**
@@ -21,7 +20,6 @@ use Nette\SmartObject;
  */
 abstract class GrantType implements IGrant
 {
-    use SmartObject;
 
     public const SCOPE_KEY = 'scope';
     public const CLIENT_ID_KEY = 'client_id';
@@ -73,8 +71,6 @@ abstract class GrantType implements IGrant
         return $this->client;
     }
 
-    /****************** IGrant interface ******************/
-
     /**
      * Verify grant type
      * @param IClient $client
@@ -92,8 +88,6 @@ abstract class GrantType implements IGrant
             throw new UnauthorizedClientException;
         }
     }
-
-    /****************** Access token template methods ******************/
 
     /**
      * Verify request

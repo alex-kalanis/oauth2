@@ -8,7 +8,6 @@ use Dibi\Connection;
 use kalanis\OAuth2\Storage\RefreshTokens\IRefreshToken;
 use kalanis\OAuth2\Storage\RefreshTokens\IRefreshTokenStorage;
 use kalanis\OAuth2\Storage\RefreshTokens\RefreshToken;
-use Nette\SmartObject;
 
 
 /**
@@ -17,9 +16,6 @@ use Nette\SmartObject;
  */
 class RefreshTokenStorage implements IRefreshTokenStorage
 {
-
-    use SmartObject;
-
 
     public function __construct(
         private readonly Connection $context,
@@ -36,20 +32,18 @@ class RefreshTokenStorage implements IRefreshTokenStorage
         return 'oauth_refresh_token';
     }
 
-    /******************** IRefreshTokenStorage ********************/
-
     /**
      * Store refresh token
      * @param IRefreshToken $refreshToken
      */
     public function store(IRefreshToken $refreshToken): void
     {
-        $this->context->insert($this->getTable(), array(
+        $this->context->insert($this->getTable(), [
             'refresh_token' => $refreshToken->getRefreshToken(),
             'client_id' => $refreshToken->getClientId(),
             'user_id' => $refreshToken->getUserId(),
             'expires_at' => $refreshToken->getExpires()
-        ))->execute();
+        ])->execute();
     }
 
     /**
@@ -58,7 +52,7 @@ class RefreshTokenStorage implements IRefreshTokenStorage
      */
     public function remove(string $token): void
     {
-        $this->context->delete($this->getTable())->where(array('refresh_token' => $token))->execute();
+        $this->context->delete($this->getTable())->where(['refresh_token' => $token])->execute();
     }
 
     /**

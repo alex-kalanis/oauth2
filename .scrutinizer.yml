@@ -40,7 +40,7 @@ build:
           - mysql -e "CREATE DATABASE scrutinizer_run"
       tests:
         override:
-          - command: WITH_TEST_ENV=1 vendor/bin/tester -C -j 1 php-tests --coverage-src php-src/ --coverage php-tests/temp/clover.xml
+          - command: WITH_TEST_ENV=1 vendor/bin/tester -C -j 30 php-tests --coverage-src php-src/ --coverage php-tests/temp/clover.xml
             coverage:
               file:  php-tests/temp/clover.xml
               format: php-clover

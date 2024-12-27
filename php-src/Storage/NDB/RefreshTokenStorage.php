@@ -11,7 +11,6 @@ use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\SmartObject;
 
 
 /**
@@ -20,10 +19,8 @@ use Nette\SmartObject;
  */
 class RefreshTokenStorage implements IRefreshTokenStorage
 {
-    use SmartObject;
-
     public function __construct(
-        private readonly Explorer $context
+        private readonly Explorer $context,
     )
     {
     }
@@ -41,7 +38,6 @@ class RefreshTokenStorage implements IRefreshTokenStorage
         ]);
     }
 
-    /******************** IRefreshTokenStorage ********************/
     /**
      * Get authorization code table
      * @return Selection<ActiveRow>

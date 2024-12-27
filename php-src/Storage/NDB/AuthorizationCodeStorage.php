@@ -10,7 +10,6 @@ use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\SmartObject;
 use PDOException;
 
 
@@ -20,10 +19,9 @@ use PDOException;
  */
 class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeStorage
 {
-    use SmartObject;
 
     public function __construct(
-        private readonly Explorer $context
+        private readonly Explorer $context,
     )
     {
     }
@@ -69,7 +67,6 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
         return $this->context->table('oauth_authorization_code');
     }
 
-    /******************** IAuthorizationCodeStorage ********************/
     /**
      * Get scope table
      * @return Selection<ActiveRow>

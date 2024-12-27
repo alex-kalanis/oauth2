@@ -7,7 +7,6 @@ use Dibi\Connection;
 use kalanis\OAuth2\Storage\Clients\Client;
 use kalanis\OAuth2\Storage\Clients\IClient;
 use kalanis\OAuth2\Storage\Clients\IClientStorage;
-use Nette\SmartObject;
 
 
 /**
@@ -16,9 +15,6 @@ use Nette\SmartObject;
  */
 class ClientStorage implements IClientStorage
 {
-
-    use SmartObject;
-
 
     public function __construct(
         protected readonly Connection $context,

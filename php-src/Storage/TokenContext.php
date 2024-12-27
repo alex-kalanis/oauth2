@@ -4,7 +4,6 @@ namespace kalanis\OAuth2\Storage;
 
 
 use kalanis\OAuth2\Exceptions\InvalidStateException;
-use Nette\SmartObject;
 
 
 /**
@@ -13,8 +12,6 @@ use Nette\SmartObject;
  */
 class TokenContext
 {
-    use SmartObject;
-
     /** @var array<ITokenFacade> */
     private array $tokens = [];
 

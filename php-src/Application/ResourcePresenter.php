@@ -17,25 +17,13 @@ use Nette\Application\UI\Presenter;
 abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 {
 
-    protected AccessTokenFacade $accessToken;
-    private IInput $input;
+    /** Access token manager facade */
+    #[\Nette\DI\Attributes\Inject]
+    public AccessTokenFacade $accessToken;
 
-    /**
-     * Standard input parser
-     */
-    public function injectInput(IInput $input): void
-    {
-        $this->input = $input;
-    }
-
-    /**
-     * Access token manager facade
-     * @param AccessTokenFacade $accessToken
-     */
-    public function injectAccessToken(AccessTokenFacade $accessToken): void
-    {
-        $this->accessToken = $accessToken;
-    }
+    /** Standard input parser */
+    #[\Nette\DI\Attributes\Inject]
+    public IInput $input;
 
     /**
      * Check presenter requirements

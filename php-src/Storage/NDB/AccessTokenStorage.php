@@ -12,7 +12,6 @@ use Nette\Database\Explorer;
 use Nette\Database\SqlLiteral;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\SmartObject;
 use PDOException;
 
 
@@ -22,10 +21,9 @@ use PDOException;
  */
 class AccessTokenStorage implements IAccessTokenStorage
 {
-    use SmartObject;
 
     public function __construct(
-        private readonly Explorer $context
+        private readonly Explorer $context,
     )
     {
     }
@@ -71,7 +69,6 @@ class AccessTokenStorage implements IAccessTokenStorage
         return $this->context->table('oauth_access_token');
     }
 
-    /******************** IAccessTokenStorage ********************/
     /**
      * Get scope table
      * @return Selection<ActiveRow>

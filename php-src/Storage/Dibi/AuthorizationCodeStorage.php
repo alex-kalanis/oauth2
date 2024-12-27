@@ -7,7 +7,6 @@ use DateTime;
 use Dibi\Connection;
 use kalanis\OAuth2\Exceptions\InvalidScopeException;
 use kalanis\OAuth2\Storage\AuthorizationCodes;
-use Nette\SmartObject;
 
 
 /**
@@ -16,9 +15,6 @@ use Nette\SmartObject;
  */
 class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeStorage
 {
-
-    use SmartObject;
-
 
     public function __construct(
         private readonly Connection $context,
@@ -44,8 +40,6 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
         return 'oauth_authorization_code_scope';
     }
 
-    /******************** IAuthorizationCodeStorage ********************/
-
     /**
      * Store authorization code
      * @param AuthorizationCodes\IAuthorizationCode $authorizationCode
@@ -53,12 +47,12 @@ class AuthorizationCodeStorage implements AuthorizationCodes\IAuthorizationCodeS
      */
     public function store(AuthorizationCodes\IAuthorizationCode $authorizationCode): void
     {
-        $this->context->insert($this->getTable(), array(
+        $this->context->insert($this->getTable(), [
             'authorization_code' => $authorizationCode->getAuthorizationCode(),
             'client_id' => $authorizationCode->getClientId(),
             'user_id' => $authorizationCode->getUserId(),
             'expires_at' => $authorizationCode->getExpires()
-        ))->execute();
+        ])->execute();
 
         $this->context->begin();
         try {

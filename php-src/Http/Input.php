@@ -4,7 +4,6 @@ namespace kalanis\OAuth2\Http;
 
 
 use Nette\Http\IRequest;
-use Nette\SmartObject;
 
 
 /**
@@ -13,13 +12,12 @@ use Nette\SmartObject;
  */
 class Input implements IInput
 {
-    use SmartObject;
 
     /** @var array<string|int, mixed>|null */
     private ?array $data = null;
 
     public function __construct(
-        private readonly IRequest $request
+        private readonly IRequest $request,
     )
     {
     }

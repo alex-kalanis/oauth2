@@ -4,7 +4,6 @@ namespace kalanis\OAuth2\Storage\RefreshTokens;
 
 
 use DateTime;
-use Nette\SmartObject;
 
 
 /**
@@ -13,8 +12,6 @@ use Nette\SmartObject;
  */
 class RefreshToken implements IRefreshToken
 {
-    use SmartObject;
-
     /**
      * @param string $refreshToken
      * @param DateTime $expires

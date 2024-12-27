@@ -8,7 +8,6 @@ use kalanis\OAuth2\IKeyGenerator;
 use kalanis\OAuth2\Storage\Clients\IClient;
 use kalanis\OAuth2\Storage\Exceptions\InvalidAccessTokenException;
 use kalanis\OAuth2\Storage\ITokenFacade;
-use Nette\SmartObject;
 
 
 /**
@@ -17,12 +16,11 @@ use Nette\SmartObject;
  */
 class AccessTokenFacade implements ITokenFacade
 {
-    use SmartObject;
 
     public function __construct(
         private readonly int $lifetime,
         private readonly IKeyGenerator $keyGenerator,
-        private readonly IAccessTokenStorage $storage
+        private readonly IAccessTokenStorage $storage,
     )
     {
     }
@@ -68,8 +66,6 @@ class AccessTokenFacade implements ITokenFacade
         return self::ACCESS_TOKEN;
     }
 
-
-    /******************** Getters & setters ********************/
 
     /**
      * Returns access token lifetime

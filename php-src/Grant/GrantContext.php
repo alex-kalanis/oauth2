@@ -4,7 +4,6 @@ namespace kalanis\OAuth2\Grant;
 
 
 use kalanis\OAuth2\Exceptions\InvalidStateException;
-use Nette\SmartObject;
 
 
 /**
@@ -13,7 +12,6 @@ use Nette\SmartObject;
  */
 class GrantContext
 {
-    use SmartObject;
 
     /** @var array<IGrant> */
     private array $grantTypes = [];

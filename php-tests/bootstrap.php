@@ -25,3 +25,10 @@ if (boolval(intval(strval(getenv('WITH_TEST_ENV'))))) {
 //    xdebug_disable();
 //    Tester\CodeCoverage\Collector::start(__DIR__ . '/coverage.dat', 'Xdebug');
 //}
+
+if (!class_exists('SensitiveParameter', false)) {
+    #[\Attribute(\Attribute::TARGET_PARAMETER)]
+    final class SensitiveParameter {
+        public function __construct() {}
+    }
+}

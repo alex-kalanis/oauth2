@@ -8,7 +8,6 @@ use kalanis\OAuth2\IKeyGenerator;
 use kalanis\OAuth2\Storage\Clients\IClient;
 use kalanis\OAuth2\Storage\Exceptions\InvalidAuthorizationCodeException;
 use kalanis\OAuth2\Storage\ITokenFacade;
-use Nette\SmartObject;
 
 
 /**
@@ -17,12 +16,11 @@ use Nette\SmartObject;
  */
 class AuthorizationCodeFacade implements ITokenFacade
 {
-    use SmartObject;
 
     public function __construct(
         private readonly int $lifetime,
         private readonly IKeyGenerator $keyGenerator,
-        private readonly IAuthorizationCodeStorage $storage
+        private readonly IAuthorizationCodeStorage $storage,
     )
     {
     }
@@ -67,9 +65,6 @@ class AuthorizationCodeFacade implements ITokenFacade
     {
         return self::AUTHORIZATION_CODE;
     }
-
-
-    /****************** Getters & setters ******************/
 
     /**
      * Get token lifetime

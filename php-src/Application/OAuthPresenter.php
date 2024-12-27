@@ -25,40 +25,23 @@ use Traversable;
 /**
  * OauthPresenter
  * @package kalanis\OAuth2\Application
- *
- * @property-read IGrant $grantType
  */
 class OAuthPresenter extends Presenter implements IOAuthPresenter
 {
-    protected AuthorizationCodeFacade $authorizationCode;
-    protected IClientStorage $clientStorage;
-    protected IClient $client;
-    private GrantContext $grantContext;
 
+    /** Inject token manager - authorization code */
+    #[\Nette\DI\Attributes\Inject]
+    public AuthorizationCodeFacade $authorizationCode;
 
-    /**
-     * Inject grant strategy context
-     */
-    public function injectGrant(GrantContext $grantContext): void
-    {
-        $this->grantContext = $grantContext;
-    }
+    /** Inject client storage */
+    #[\Nette\DI\Attributes\Inject]
+    public IClientStorage $clientStorage;
 
-    /**
-     * Inject token manager - authorization code
-     */
-    public function injectAuthorizationCode(AuthorizationCodeFacade $authorizationCode): void
-    {
-        $this->authorizationCode = $authorizationCode;
-    }
+    /** Inject grant strategy context */
+    #[\Nette\DI\Attributes\Inject]
+    public GrantContext $grantContext;
 
-    /**
-     * Injet client storage
-     */
-    public function injectClientStorage(IClientStorage $clientStorage): void
-    {
-        $this->clientStorage = $clientStorage;
-    }
+    protected ?IClient $client = null;
 
     /**
      * @param string $responseType
@@ -66,13 +49,13 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @param string|null $scope
      * @param string|null $state
      */
-    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = null, ?string $state = NULL): void
+    public function issueAuthorizationCode(string $responseType, string $redirectUrl, ?string $scope = null, ?string $state = null): void
     {
         try {
             if ('code' !== $responseType) {
                 throw new UnsupportedResponseTypeException;
             }
-            if (!$this->client->getId()) {
+            if (!$this->client?->getId()) {
                 throw new UnauthorizedClientException;
             }
 

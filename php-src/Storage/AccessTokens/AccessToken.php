@@ -4,7 +4,6 @@ namespace kalanis\OAuth2\Storage\AccessTokens;
 
 
 use DateTime;
-use Nette\SmartObject;
 
 
 /**
@@ -13,7 +12,6 @@ use Nette\SmartObject;
  */
 class AccessToken implements IAccessToken
 {
-    use SmartObject;
 
     /**
      * @param string $accessToken
@@ -27,7 +25,7 @@ class AccessToken implements IAccessToken
         private readonly DateTime $expires,
         private readonly string|int $clientId,
         private readonly string|int|null $userId,
-        private readonly array $scope
+        private readonly array $scope,
     )
     {
     }

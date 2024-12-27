@@ -9,7 +9,6 @@ use kalanis\OAuth2\Storage\Clients\IClientStorage;
 use Nette\Database\Explorer;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
-use Nette\SmartObject;
 
 
 /**
@@ -18,10 +17,9 @@ use Nette\SmartObject;
  */
 class ClientStorage implements IClientStorage
 {
-    use SmartObject;
 
     public function __construct(
-        private readonly Explorer $context
+        private readonly Explorer $context,
     )
     {
     }
