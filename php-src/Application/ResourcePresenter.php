@@ -8,6 +8,8 @@ use kalanis\OAuth2\Storage\AccessTokens\AccessTokenFacade;
 use kalanis\OAuth2\Storage\Exceptions\InvalidAccessTokenException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Presenter;
+use ReflectionClass;
+use ReflectionMethod;
 
 
 /**
@@ -27,10 +29,10 @@ abstract class ResourcePresenter extends Presenter implements IResourcePresenter
 
     /**
      * Check presenter requirements
-     * @param \ReflectionClass<object>|\ReflectionMethod $element
+     * @param ReflectionClass<object>|ReflectionMethod $element
      * @throws ForbiddenRequestException
      */
-    public function checkRequirements(\ReflectionClass|\ReflectionMethod $element): void
+    public function checkRequirements(ReflectionClass|ReflectionMethod $element): void
     {
         parent::checkRequirements($element);
         $accessToken = $this->input->getAuthorization();

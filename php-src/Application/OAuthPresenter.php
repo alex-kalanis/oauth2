@@ -55,12 +55,12 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
             if ('code' !== $responseType) {
                 throw new UnsupportedResponseTypeException;
             }
-            if (!$this->client?->getId()) {
+            if (empty($this->client?->getId())) {
                 throw new UnauthorizedClientException;
             }
 
             $scope = array_filter(explode(',', str_replace(' ', ',', strval($scope))));
-            $code = $this->authorizationCode->create($this->client, $this->user->getId(), $scope);
+            $code = $this->authorizationCode->create($this->client, $this->getUser()->getId(), $scope);
             $data = ['code' => $code->getAuthorizationCode()];
             if (!empty($state)) {
                 $data['state'] = $state;
@@ -78,6 +78,7 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * @param iterable<string|int, mixed> $data
      * @param string|null $redirectUrl
      * @param int $code
+     * @return void
      */
     public function oauthResponse(iterable $data, ?string $redirectUrl = null, int $code = 200): void
     {
@@ -119,7 +120,6 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
      * Issue access token to client
      * @param string|null $grantType
      * @param string|null $redirectUrl
-     *
      * @throws InvalidAuthorizationCodeException
      * @throws InvalidStateException
      */
@@ -159,6 +159,8 @@ class OAuthPresenter extends Presenter implements IOAuthPresenter
 
     /**
      * On presenter startup
+     * @throws InvalidGrantException
+     * @return void
      */
     protected function startup(): void
     {

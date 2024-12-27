@@ -27,12 +27,14 @@
         "nette/database": "^3.2",
         "nette/di": "^3.2",
         "nette/http": "^3.3",
-        "nette/security": "^3.2",
-        "nette/utils": "^4.0"
+        "nette/security": "^3.2"
     },
     "require-dev": {
         "ext-tokenizer": "*",
         "nette/tester": "^2.5",
+        "nette/utils": "^4.0",
+        "nette/caching": "^3.3",
+        "nette/routing": "^3.2",
         "dibi/dibi": "^5.0",
         "rector/rector": "^1.2",
         "shipmonk/composer-dependency-analyser": "^1.7",
